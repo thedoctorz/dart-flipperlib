@@ -45,6 +45,7 @@ PROTOS=(
   desktop
   network
   gps
+  subghz
 )
 
 PROTO_FILES=()

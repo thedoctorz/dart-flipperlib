@@ -445,6 +445,49 @@ class FlipperClient {
     await blePlatform.requestPermissions();
   }
 
+  /// True when the platform's Bluetooth adapter is on and this app is allowed
+  /// to use it, so a scan would actually reach the radio.
+  ///
+  /// Worth asking before treating an empty scan as "nothing is out there": on
+  /// a fresh install the adapter reports unauthorized until the user answers
+  /// the permission sheet, and a scan in that window returns instantly with no
+  /// results and no error.
+  Future<bool> isBleAvailable() async {
+    try {
+      return await uble.UniversalBle.getBluetoothAvailabilityState() ==
+          uble.AvailabilityState.poweredOn;
+    } catch (e) {
+      Log.info('[BLE] availability unavailable: $e');
+      return false;
+    }
+  }
+
+  /// Fires whenever the adapter's availability changes - Bluetooth switched
+  /// on or off, or the permission finally answered.
+  Stream<bool> get bleAvailability {
+    _bleAvailabilityCtrl ??= _openBleAvailability();
+    return _bleAvailabilityCtrl!.stream;
+  }
+
+  StreamController<bool>? _bleAvailabilityCtrl;
+
+  StreamController<bool> _openBleAvailability() {
+    late final StreamController<bool> controller;
+    controller = StreamController<bool>.broadcast(
+      onListen: () {
+        uble.UniversalBle.onAvailabilityChange = (state) {
+          if (controller.isClosed) return;
+          controller.add(state == uble.AvailabilityState.poweredOn);
+        };
+      },
+      onCancel: () {
+        if (controller.hasListener) return;
+        uble.UniversalBle.onAvailabilityChange = null;
+      },
+    );
+    return controller;
+  }
+
   Future<List<FlipperDevice>> refreshDevices({
     Duration bleTimeout = const Duration(seconds: 10),
   }) {
@@ -1377,6 +1420,12 @@ class FlipperClient {
     await deviceInfoWatchCtrl.close();
     await storageMutationCtrl.close();
     await _sessionsCtrl.close();
+    final availability = _bleAvailabilityCtrl;
+    _bleAvailabilityCtrl = null;
+    if (availability != null) {
+      uble.UniversalBle.onAvailabilityChange = null;
+      await availability.close();
+    }
   }
 }
 

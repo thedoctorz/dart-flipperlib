@@ -23,6 +23,7 @@ import 'gui.pb.dart' as $3;
 import 'network.pb.dart' as $7;
 import 'property.pb.dart' as $5;
 import 'storage.pb.dart' as $1;
+import 'subghz.pb.dart' as $9;
 import 'system.pb.dart' as $0;
 
 export 'package:protobuf/protobuf.dart' show GeneratedMessageGenericExtensions;
@@ -195,6 +196,18 @@ enum Main_Content {
   networkHttpRequest,
   networkHttpResponse,
   networkWebsocketOpenRequest,
+  subghzDecodeRawRequest,
+  subghzDecodeRawResponse,
+  subghzDecodeRawStopRequest,
+  subghzRxStartRequest,
+  subghzRxStopRequest,
+  subghzRxConfigRequest,
+  subghzRxStateResponse,
+  subghzRxEvent,
+  subghzTxRequest,
+  subghzTxResponse,
+  subghzSettingsRequest,
+  subghzSettingsResponse,
   notSet
 }
 
@@ -290,6 +303,18 @@ class Main extends $pb.GeneratedMessage {
     $7.HttpRequest? networkHttpRequest,
     $7.HttpResponse? networkHttpResponse,
     $7.WebSocketOpenRequest? networkWebsocketOpenRequest,
+    $9.DecodeRawRequest? subghzDecodeRawRequest,
+    $9.DecodeRawResponse? subghzDecodeRawResponse,
+    $9.DecodeRawStopRequest? subghzDecodeRawStopRequest,
+    $9.RxStartRequest? subghzRxStartRequest,
+    $9.RxStopRequest? subghzRxStopRequest,
+    $9.RxConfigRequest? subghzRxConfigRequest,
+    $9.RxStateResponse? subghzRxStateResponse,
+    $9.RxEvent? subghzRxEvent,
+    $9.TxRequest? subghzTxRequest,
+    $9.TxResponse? subghzTxResponse,
+    $9.SettingsRequest? subghzSettingsRequest,
+    $9.SettingsResponse? subghzSettingsResponse,
   }) {
     final result = create();
     if (commandId != null) result.commandId = commandId;
@@ -454,6 +479,27 @@ class Main extends $pb.GeneratedMessage {
       result.networkHttpResponse = networkHttpResponse;
     if (networkWebsocketOpenRequest != null)
       result.networkWebsocketOpenRequest = networkWebsocketOpenRequest;
+    if (subghzDecodeRawRequest != null)
+      result.subghzDecodeRawRequest = subghzDecodeRawRequest;
+    if (subghzDecodeRawResponse != null)
+      result.subghzDecodeRawResponse = subghzDecodeRawResponse;
+    if (subghzDecodeRawStopRequest != null)
+      result.subghzDecodeRawStopRequest = subghzDecodeRawStopRequest;
+    if (subghzRxStartRequest != null)
+      result.subghzRxStartRequest = subghzRxStartRequest;
+    if (subghzRxStopRequest != null)
+      result.subghzRxStopRequest = subghzRxStopRequest;
+    if (subghzRxConfigRequest != null)
+      result.subghzRxConfigRequest = subghzRxConfigRequest;
+    if (subghzRxStateResponse != null)
+      result.subghzRxStateResponse = subghzRxStateResponse;
+    if (subghzRxEvent != null) result.subghzRxEvent = subghzRxEvent;
+    if (subghzTxRequest != null) result.subghzTxRequest = subghzTxRequest;
+    if (subghzTxResponse != null) result.subghzTxResponse = subghzTxResponse;
+    if (subghzSettingsRequest != null)
+      result.subghzSettingsRequest = subghzSettingsRequest;
+    if (subghzSettingsResponse != null)
+      result.subghzSettingsResponse = subghzSettingsResponse;
     return result;
   }
 
@@ -554,6 +600,18 @@ class Main extends $pb.GeneratedMessage {
     88: Main_Content.networkHttpRequest,
     89: Main_Content.networkHttpResponse,
     90: Main_Content.networkWebsocketOpenRequest,
+    91: Main_Content.subghzDecodeRawRequest,
+    92: Main_Content.subghzDecodeRawResponse,
+    93: Main_Content.subghzDecodeRawStopRequest,
+    94: Main_Content.subghzRxStartRequest,
+    95: Main_Content.subghzRxStopRequest,
+    96: Main_Content.subghzRxConfigRequest,
+    97: Main_Content.subghzRxStateResponse,
+    98: Main_Content.subghzRxEvent,
+    99: Main_Content.subghzTxRequest,
+    100: Main_Content.subghzTxResponse,
+    101: Main_Content.subghzSettingsRequest,
+    102: Main_Content.subghzSettingsResponse,
     0: Main_Content.notSet
   };
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(
@@ -647,7 +705,19 @@ class Main extends $pb.GeneratedMessage {
       87,
       88,
       89,
-      90
+      90,
+      91,
+      92,
+      93,
+      94,
+      95,
+      96,
+      97,
+      98,
+      99,
+      100,
+      101,
+      102
     ])
     ..aI(1, _omitFieldNames ? '' : 'commandId', fieldType: $pb.PbFieldType.OU3)
     ..aE<CommandStatus>(2, _omitFieldNames ? '' : 'commandStatus',
@@ -863,6 +933,37 @@ class Main extends $pb.GeneratedMessage {
     ..aOM<$7.WebSocketOpenRequest>(
         90, _omitFieldNames ? '' : 'networkWebsocketOpenRequest',
         subBuilder: $7.WebSocketOpenRequest.create)
+    ..aOM<$9.DecodeRawRequest>(
+        91, _omitFieldNames ? '' : 'subghzDecodeRawRequest',
+        subBuilder: $9.DecodeRawRequest.create)
+    ..aOM<$9.DecodeRawResponse>(
+        92, _omitFieldNames ? '' : 'subghzDecodeRawResponse',
+        subBuilder: $9.DecodeRawResponse.create)
+    ..aOM<$9.DecodeRawStopRequest>(
+        93, _omitFieldNames ? '' : 'subghzDecodeRawStopRequest',
+        subBuilder: $9.DecodeRawStopRequest.create)
+    ..aOM<$9.RxStartRequest>(94, _omitFieldNames ? '' : 'subghzRxStartRequest',
+        subBuilder: $9.RxStartRequest.create)
+    ..aOM<$9.RxStopRequest>(95, _omitFieldNames ? '' : 'subghzRxStopRequest',
+        subBuilder: $9.RxStopRequest.create)
+    ..aOM<$9.RxConfigRequest>(
+        96, _omitFieldNames ? '' : 'subghzRxConfigRequest',
+        subBuilder: $9.RxConfigRequest.create)
+    ..aOM<$9.RxStateResponse>(
+        97, _omitFieldNames ? '' : 'subghzRxStateResponse',
+        subBuilder: $9.RxStateResponse.create)
+    ..aOM<$9.RxEvent>(98, _omitFieldNames ? '' : 'subghzRxEvent',
+        subBuilder: $9.RxEvent.create)
+    ..aOM<$9.TxRequest>(99, _omitFieldNames ? '' : 'subghzTxRequest',
+        subBuilder: $9.TxRequest.create)
+    ..aOM<$9.TxResponse>(100, _omitFieldNames ? '' : 'subghzTxResponse',
+        subBuilder: $9.TxResponse.create)
+    ..aOM<$9.SettingsRequest>(
+        101, _omitFieldNames ? '' : 'subghzSettingsRequest',
+        subBuilder: $9.SettingsRequest.create)
+    ..aOM<$9.SettingsResponse>(
+        102, _omitFieldNames ? '' : 'subghzSettingsResponse',
+        subBuilder: $9.SettingsResponse.create)
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -970,6 +1071,18 @@ class Main extends $pb.GeneratedMessage {
   @$pb.TagNumber(88)
   @$pb.TagNumber(89)
   @$pb.TagNumber(90)
+  @$pb.TagNumber(91)
+  @$pb.TagNumber(92)
+  @$pb.TagNumber(93)
+  @$pb.TagNumber(94)
+  @$pb.TagNumber(95)
+  @$pb.TagNumber(96)
+  @$pb.TagNumber(97)
+  @$pb.TagNumber(98)
+  @$pb.TagNumber(99)
+  @$pb.TagNumber(100)
+  @$pb.TagNumber(101)
+  @$pb.TagNumber(102)
   Main_Content whichContent() => _Main_ContentByTag[$_whichOneof(0)]!;
   @$pb.TagNumber(4)
   @$pb.TagNumber(5)
@@ -1058,6 +1171,18 @@ class Main extends $pb.GeneratedMessage {
   @$pb.TagNumber(88)
   @$pb.TagNumber(89)
   @$pb.TagNumber(90)
+  @$pb.TagNumber(91)
+  @$pb.TagNumber(92)
+  @$pb.TagNumber(93)
+  @$pb.TagNumber(94)
+  @$pb.TagNumber(95)
+  @$pb.TagNumber(96)
+  @$pb.TagNumber(97)
+  @$pb.TagNumber(98)
+  @$pb.TagNumber(99)
+  @$pb.TagNumber(100)
+  @$pb.TagNumber(101)
+  @$pb.TagNumber(102)
   void clearContent() => $_clearField($_whichOneof(0));
 
   @$pb.TagNumber(1)
@@ -2086,6 +2211,142 @@ class Main extends $pb.GeneratedMessage {
   void clearNetworkWebsocketOpenRequest() => $_clearField(90);
   @$pb.TagNumber(90)
   $7.WebSocketOpenRequest ensureNetworkWebsocketOpenRequest() => $_ensure(89);
+
+  @$pb.TagNumber(91)
+  $9.DecodeRawRequest get subghzDecodeRawRequest => $_getN(90);
+  @$pb.TagNumber(91)
+  set subghzDecodeRawRequest($9.DecodeRawRequest value) =>
+      $_setField(91, value);
+  @$pb.TagNumber(91)
+  $core.bool hasSubghzDecodeRawRequest() => $_has(90);
+  @$pb.TagNumber(91)
+  void clearSubghzDecodeRawRequest() => $_clearField(91);
+  @$pb.TagNumber(91)
+  $9.DecodeRawRequest ensureSubghzDecodeRawRequest() => $_ensure(90);
+
+  @$pb.TagNumber(92)
+  $9.DecodeRawResponse get subghzDecodeRawResponse => $_getN(91);
+  @$pb.TagNumber(92)
+  set subghzDecodeRawResponse($9.DecodeRawResponse value) =>
+      $_setField(92, value);
+  @$pb.TagNumber(92)
+  $core.bool hasSubghzDecodeRawResponse() => $_has(91);
+  @$pb.TagNumber(92)
+  void clearSubghzDecodeRawResponse() => $_clearField(92);
+  @$pb.TagNumber(92)
+  $9.DecodeRawResponse ensureSubghzDecodeRawResponse() => $_ensure(91);
+
+  @$pb.TagNumber(93)
+  $9.DecodeRawStopRequest get subghzDecodeRawStopRequest => $_getN(92);
+  @$pb.TagNumber(93)
+  set subghzDecodeRawStopRequest($9.DecodeRawStopRequest value) =>
+      $_setField(93, value);
+  @$pb.TagNumber(93)
+  $core.bool hasSubghzDecodeRawStopRequest() => $_has(92);
+  @$pb.TagNumber(93)
+  void clearSubghzDecodeRawStopRequest() => $_clearField(93);
+  @$pb.TagNumber(93)
+  $9.DecodeRawStopRequest ensureSubghzDecodeRawStopRequest() => $_ensure(92);
+
+  @$pb.TagNumber(94)
+  $9.RxStartRequest get subghzRxStartRequest => $_getN(93);
+  @$pb.TagNumber(94)
+  set subghzRxStartRequest($9.RxStartRequest value) => $_setField(94, value);
+  @$pb.TagNumber(94)
+  $core.bool hasSubghzRxStartRequest() => $_has(93);
+  @$pb.TagNumber(94)
+  void clearSubghzRxStartRequest() => $_clearField(94);
+  @$pb.TagNumber(94)
+  $9.RxStartRequest ensureSubghzRxStartRequest() => $_ensure(93);
+
+  @$pb.TagNumber(95)
+  $9.RxStopRequest get subghzRxStopRequest => $_getN(94);
+  @$pb.TagNumber(95)
+  set subghzRxStopRequest($9.RxStopRequest value) => $_setField(95, value);
+  @$pb.TagNumber(95)
+  $core.bool hasSubghzRxStopRequest() => $_has(94);
+  @$pb.TagNumber(95)
+  void clearSubghzRxStopRequest() => $_clearField(95);
+  @$pb.TagNumber(95)
+  $9.RxStopRequest ensureSubghzRxStopRequest() => $_ensure(94);
+
+  @$pb.TagNumber(96)
+  $9.RxConfigRequest get subghzRxConfigRequest => $_getN(95);
+  @$pb.TagNumber(96)
+  set subghzRxConfigRequest($9.RxConfigRequest value) => $_setField(96, value);
+  @$pb.TagNumber(96)
+  $core.bool hasSubghzRxConfigRequest() => $_has(95);
+  @$pb.TagNumber(96)
+  void clearSubghzRxConfigRequest() => $_clearField(96);
+  @$pb.TagNumber(96)
+  $9.RxConfigRequest ensureSubghzRxConfigRequest() => $_ensure(95);
+
+  @$pb.TagNumber(97)
+  $9.RxStateResponse get subghzRxStateResponse => $_getN(96);
+  @$pb.TagNumber(97)
+  set subghzRxStateResponse($9.RxStateResponse value) => $_setField(97, value);
+  @$pb.TagNumber(97)
+  $core.bool hasSubghzRxStateResponse() => $_has(96);
+  @$pb.TagNumber(97)
+  void clearSubghzRxStateResponse() => $_clearField(97);
+  @$pb.TagNumber(97)
+  $9.RxStateResponse ensureSubghzRxStateResponse() => $_ensure(96);
+
+  @$pb.TagNumber(98)
+  $9.RxEvent get subghzRxEvent => $_getN(97);
+  @$pb.TagNumber(98)
+  set subghzRxEvent($9.RxEvent value) => $_setField(98, value);
+  @$pb.TagNumber(98)
+  $core.bool hasSubghzRxEvent() => $_has(97);
+  @$pb.TagNumber(98)
+  void clearSubghzRxEvent() => $_clearField(98);
+  @$pb.TagNumber(98)
+  $9.RxEvent ensureSubghzRxEvent() => $_ensure(97);
+
+  @$pb.TagNumber(99)
+  $9.TxRequest get subghzTxRequest => $_getN(98);
+  @$pb.TagNumber(99)
+  set subghzTxRequest($9.TxRequest value) => $_setField(99, value);
+  @$pb.TagNumber(99)
+  $core.bool hasSubghzTxRequest() => $_has(98);
+  @$pb.TagNumber(99)
+  void clearSubghzTxRequest() => $_clearField(99);
+  @$pb.TagNumber(99)
+  $9.TxRequest ensureSubghzTxRequest() => $_ensure(98);
+
+  @$pb.TagNumber(100)
+  $9.TxResponse get subghzTxResponse => $_getN(99);
+  @$pb.TagNumber(100)
+  set subghzTxResponse($9.TxResponse value) => $_setField(100, value);
+  @$pb.TagNumber(100)
+  $core.bool hasSubghzTxResponse() => $_has(99);
+  @$pb.TagNumber(100)
+  void clearSubghzTxResponse() => $_clearField(100);
+  @$pb.TagNumber(100)
+  $9.TxResponse ensureSubghzTxResponse() => $_ensure(99);
+
+  @$pb.TagNumber(101)
+  $9.SettingsRequest get subghzSettingsRequest => $_getN(100);
+  @$pb.TagNumber(101)
+  set subghzSettingsRequest($9.SettingsRequest value) => $_setField(101, value);
+  @$pb.TagNumber(101)
+  $core.bool hasSubghzSettingsRequest() => $_has(100);
+  @$pb.TagNumber(101)
+  void clearSubghzSettingsRequest() => $_clearField(101);
+  @$pb.TagNumber(101)
+  $9.SettingsRequest ensureSubghzSettingsRequest() => $_ensure(100);
+
+  @$pb.TagNumber(102)
+  $9.SettingsResponse get subghzSettingsResponse => $_getN(101);
+  @$pb.TagNumber(102)
+  set subghzSettingsResponse($9.SettingsResponse value) =>
+      $_setField(102, value);
+  @$pb.TagNumber(102)
+  $core.bool hasSubghzSettingsResponse() => $_has(101);
+  @$pb.TagNumber(102)
+  void clearSubghzSettingsResponse() => $_clearField(102);
+  @$pb.TagNumber(102)
+  $9.SettingsResponse ensureSubghzSettingsResponse() => $_ensure(101);
 }
 
 class Region_Band extends $pb.GeneratedMessage {

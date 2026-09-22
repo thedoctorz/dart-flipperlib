@@ -7,6 +7,7 @@ export 'src/client/api/gpio.dart';
 export 'src/client/api/gui.dart';
 export 'src/client/api/property.dart';
 export 'src/client/api/storage.dart';
+export 'src/client/api/subghz.dart';
 export 'src/client/api/system.dart';
 export 'src/client/api/usb.dart';
 export 'src/model/discovered.dart';
