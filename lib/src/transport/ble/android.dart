@@ -48,6 +48,11 @@ class AndroidBleTransport extends UniversalBleTransportBase {
   AndroidBleTransport._(BleDiscoveredDevice device)
     : super(device, UniversalBleOps());
 
+  // Android reports onCharacteristicWrite for write commands as well, once
+  // the controller has taken the packet.
+  @override
+  bool get pacesWriteWithoutResponse => true;
+
   static Future<AndroidBleTransport> create(BleDiscoveredDevice device) async {
     final transport = AndroidBleTransport._(device);
     await transport.configure();

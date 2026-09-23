@@ -46,6 +46,11 @@ class IosBleTransport extends UniversalBleTransportBase {
   IosBleTransport._(BleDiscoveredDevice device)
     : super(device, UniversalBleOps());
 
+  // Holds on the vendored universal_ble, which releases a write command only
+  // while CoreBluetooth reports canSendWriteWithoutResponse.
+  @override
+  bool get pacesWriteWithoutResponse => true;
+
   static Future<IosBleTransport> create(BleDiscoveredDevice device) async {
     final transport = IosBleTransport._(device);
     await transport.configure();
