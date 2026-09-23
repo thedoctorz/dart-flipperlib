@@ -281,7 +281,8 @@ extension FlipperStorageApi on FlipperClient {
     bool Function()? isCancelled,
   }) async {
     final total = data.length;
-    final rpcChunkSize = transport?.storageChunkSize ?? Transport.bleChunkSize;
+    final rpcChunkSize =
+        transport?.storageChunkSize ?? Transport.stockStorageChunk;
     final totalFrames = total == 0
         ? 1
         : ((total + rpcChunkSize - 1) ~/ rpcChunkSize);
@@ -294,7 +295,7 @@ extension FlipperStorageApi on FlipperClient {
 
     // Returns true when the upload was cancelled mid-stream (the firmware
     // still received a valid final frame and replied with its ACK).
-    Future<bool> upload() async {
+    Future<bool> upload(int chunkSize) async {
       var cancelled = false;
       await callRpcFramesMulti(
         (sendFrame) async {
@@ -316,9 +317,9 @@ extension FlipperStorageApi on FlipperClient {
               return;
             }
 
-            final end = (offset + rpcChunkSize) > total
+            final end = (offset + chunkSize) > total
                 ? total
-                : (offset + rpcChunkSize);
+                : (offset + chunkSize);
             final chunk = offset == end
                 ? const <int>[]
                 : data.sublist(offset, end);
@@ -352,31 +353,45 @@ extension FlipperStorageApi on FlipperClient {
       return cancelled;
     }
 
-    bool cancelled;
-    try {
-      cancelled = await upload();
-    } catch (e) {
-      if (isCancelled?.call() ?? false) {
-        // The link died while the caller was cancelling anyway; the firmware
-        // session (and its partial file state) died with it.
-        throw FlipperWriteCancelledException(path);
+    // A dropped link can come back. A decode error means the frame did not fit
+    // the firmware's window; the fast size is abandoned for the rest of the
+    // session and the file is sent once more at the stock chunk.
+    Future<bool> uploadOrRestore(int chunkSize) async {
+      try {
+        return await upload(chunkSize);
+      } catch (e) {
+        if (isCancelled?.call() ?? false) {
+          throw FlipperWriteCancelledException(path);
+        }
+        final fast = chunkSize > Transport.stockStorageChunk;
+        final sizeFallback =
+            fast && (isLinkDropError(e) || e is FlipperRpcDecodeException);
+        if (!sizeFallback && !isLinkDropError(e)) {
+          Log.error('[Storage] write "$path" failed: $e');
+          rethrow;
+        }
+        if (sizeFallback) {
+          Log.info(
+            '[Storage] write "$path" failed at $chunkSize bytes; '
+            'retrying at ${Transport.stockStorageChunk}: $e',
+          );
+        } else {
+          Log.info('[Storage] write "$path" interrupted by link drop: $e');
+        }
+        final restored = await waitForRpcSession(const Duration(seconds: 30));
+        if (!restored) {
+          rethrow;
+        }
+        if (sizeFallback) transport?.useStockLinkLimits();
+        final retryChunk = sizeFallback
+            ? Transport.stockStorageChunk
+            : chunkSize;
+        Log.info('[Storage] link restored, restarting write "$path"');
+        return upload(retryChunk);
       }
-      if (!isLinkDropError(e)) {
-        Log.error('[Storage] write "$path" failed: $e');
-        rethrow;
-      }
-      // The link dropped mid-upload and the firmware lost the partial file.
-      // If the automatic reconnect restores the session, restart the upload
-      // exactly once — the firmware opens the file with CREATE_ALWAYS, so a
-      // restart from offset 0 is safe.
-      Log.info('[Storage] write "$path" interrupted by link drop: $e');
-      final restored = await waitForRpcSession(const Duration(seconds: 30));
-      if (!restored) {
-        rethrow;
-      }
-      Log.info('[Storage] link restored, restarting write "$path"');
-      cancelled = await upload();
     }
+
+    final cancelled = await uploadOrRestore(rpcChunkSize);
 
     if (cancelled) {
       await _deletePartialWrite(path);

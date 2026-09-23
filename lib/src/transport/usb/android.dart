@@ -81,9 +81,6 @@ class AndroidUsbTransport extends Transport {
   FlipperMode get initialMode => FlipperMode.cli;
 
   @override
-  int get storageChunkSize => 1024;
-
-  @override
   Future<void> open() async {
     _inputSub = _port.inputStream?.listen(
       addBytes,

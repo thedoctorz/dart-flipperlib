@@ -14,11 +14,11 @@ abstract class UniversalBleTransportBase extends Transport {
   static const String rpcStatusCharUuid =
       '19ed82ae-ed21-4c9d-4145-228e64fe0000';
   static const int _minBleMtuSize = 20;
-  // Firmware RPC_BUFFER_SIZE (serial_service.c). The firmware resets this buffer
-  // on a fresh connection and grants the full 1024-byte credit, so this is the
-  // initial flow-control credit to assume when the first credit read races ahead
-  // of that grant and returns 0.
-  static const int _rpcBufferSize = 1024;
+  // Stock Flipper RPC_BUFFER_SIZE. Used only when the flow-control read and a
+  // short wait both come back empty. Doctor firmware advertises a larger grant;
+  // that value, not this constant, is the window once it arrives.
+  static const int _stockRpcWindow = 1024;
+  static const Duration _creditWait = Duration(milliseconds: 500);
   // The firmware's ATT_MTU ceiling (CFG_BLE_MAX_ATT_MTU = 414, app_conf.h)
   // minus the 3-byte ATT write header. Never write more than this in a single
   // ATT operation: the platform would silently fall back to a long write
@@ -106,10 +106,9 @@ abstract class UniversalBleTransportBase extends Transport {
   final List<BlePendingSend> _txQueue = [];
   Completer<void>? _txDataSignal;
   // Bytes accepted from the RPC layer that have not reached the air yet, and
-  // the ceiling that back-pressures rawWrite. One firmware credit window is
-  // exactly what the sender may coalesce in a single cycle, so queueing more
-  // would buy nothing but memory.
-  static const int _txWindowSize = _rpcBufferSize;
+  // the ceiling that back-pressures rawWrite. Set from the credit the firmware
+  // actually granted so a larger Doctor window can be filled in one cycle.
+  int _txWindowSize = _stockRpcWindow;
   int _txQueuedBytes = 0;
   Completer<void>? _txSpaceSignal;
 
@@ -389,6 +388,7 @@ abstract class UniversalBleTransportBase extends Transport {
     }
 
     await _subscribeRpcStatus(deviceId);
+    await _readInitialCredit(deviceId);
     await openExtra();
     // A drop during the rpcStatus subscribe (swallowed below) or the openExtra
     // settle must not commit a dead transport; fail the connect honestly.
@@ -513,12 +513,12 @@ abstract class UniversalBleTransportBase extends Transport {
   // overflow credit").
   //
   // The pairing trigger reads the rpcStatus characteristic, NOT the overflow
-  // one. The overflow characteristic must be read EXACTLY ONCE per session (for
-  // the initial credit): reading it returns the stored credit rather than a
-  // fresh grant, and an extra read desyncs the firmware's flow-control counter,
-  // which later trips ERROR_DECODE and makes the firmware reset its BLE stack
-  // (seen as a PEER-INITIATED drop minutes in). rpcStatus is a plain status read
-  // with no such side effect.
+  // one. The overflow characteristic must be read EXACTLY ONCE per session, and
+  // that read is _readInitialCredit after rpcStatus is active: reading it
+  // returns the stored credit rather than a fresh grant, and an extra read
+  // desyncs the firmware's flow-control counter, which later trips ERROR_DECODE
+  // and makes the firmware reset its BLE stack (seen as a PEER-INITIATED drop
+  // minutes in). rpcStatus is a plain status read with no such side effect.
   Future<void> _openEncryptedSetup(String deviceId) async {
     // 1. Pair / establish encryption via a side-effect-free encrypted read.
     final rpcSvc = _rpcStatusSvcId;
@@ -571,8 +571,20 @@ abstract class UniversalBleTransportBase extends Transport {
         timeout: _pairingOpTimeout,
       ),
     );
+  }
 
-    // 4. Authoritative initial credit — the ONLY overflow read of the session.
+  // The only overflow read of the session. It happens after rpcStatus is
+  // active, so the firmware has already written the grant into the
+  // characteristic. A zero read waits briefly for the notification, then seeds
+  // the stock 1024-byte window. Doctor firmware re-notifies any leftover grant
+  // once the stream drains, so that seed does not stall a larger window.
+  Future<void> _readInitialCredit(String deviceId) async {
+    if (_rpcStatusAvailable && !_rpcSessionActive) {
+      final signal = _rpcActiveSignal ??= Completer<void>();
+      await _awaitSignal(signal, const Duration(seconds: 2));
+      if (identical(_rpcActiveSignal, signal)) _rpcActiveSignal = null;
+    }
+
     final initialBudget = await _runPairingSensitive(
       () => _ops.read(
         deviceId,
@@ -583,16 +595,18 @@ abstract class UniversalBleTransportBase extends Transport {
     );
     _applyOverflowValue(initialBudget);
 
-    // A fresh connection resets the firmware RPC buffer and grants the full
-    // 1024-byte credit. If the read above raced ahead of that grant and saw 0,
-    // seed the standard buffer size so the first TX cycle is not stalled waiting
-    // for a credit notification that effectively already happened.
     if (_budget <= 0) {
-      _budget = _rpcBufferSize;
+      final signal = _budgetSignal ??= Completer<void>();
+      await _awaitSignal(signal, _creditWait);
+      if (identical(_budgetSignal, signal)) _budgetSignal = null;
+    }
+    if (_budget <= 0) {
+      _budget = _stockRpcWindow;
+      _txWindowSize = _stockRpcWindow;
       _budgetGen += 1;
       Log.info(
-        '[BLE] initial overflow credit was 0; seeding RPC_BUFFER_SIZE '
-        '($_rpcBufferSize) on fresh connection',
+        '[BLE] initial overflow credit was 0; seeding stock RPC window '
+        '($_stockRpcWindow)',
       );
     }
   }
@@ -829,6 +843,7 @@ abstract class UniversalBleTransportBase extends Transport {
       return;
     }
     _budget = remaining;
+    if (remaining > 0) _txWindowSize = remaining;
     _budgetGen += 1;
     if (Log.debugOn) {
       Log.debug('[BLE] credit granted: $remaining bytes (gen $_budgetGen)');
@@ -948,7 +963,7 @@ abstract class UniversalBleTransportBase extends Transport {
         budgetPolls++;
         if (budgetPolls == 1) {
           // Reading the characteristic would return its stored value, not a
-          // fresh credit, and could overrun the firmware's 1024-byte buffer.
+          // fresh credit, and could overrun the firmware's window.
           Log.info('[BLE] TX held: waiting for overflow credit');
         }
         if (budgetPolls >= _stallPollLimit && isActive) {

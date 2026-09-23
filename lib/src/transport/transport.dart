@@ -47,13 +47,22 @@ class TransportPendingWrite {
 // closeReason keeps the diagnosis. close() is the orderly path and never
 // throws.
 abstract class Transport {
-  static const int bleChunkSize = 512;
+  /// Storage payload used unless the connected firmware publishes a larger one.
+  /// A frame this size, plus protobuf overhead, fits in a stock 1024-byte window.
+  static const int stockStorageChunk = 512;
+
+  /// How many encoded bytes may be coalesced into one write on a stock window.
+  static const int stockWriteBatch = 512;
+
+  static const int bleChunkSize = stockStorageChunk;
 
   final _bytesCtrl = StreamController<List<int>>.broadcast();
   final List<TransportPendingWrite> _writeQueue = [];
   bool _writePumpRunning = false;
   TransportLifecycle _lifecycle = TransportLifecycle.active;
   Object? _closeReason;
+  int _storageChunkSize = stockStorageChunk;
+  int _writeBatchSize = stockWriteBatch;
 
   Stream<List<int>> get bytesStream => _bytesCtrl.stream;
 
@@ -72,9 +81,29 @@ abstract class Transport {
 
   FlipperMode get initialMode;
 
-  int get storageChunkSize => bleChunkSize;
+  int get storageChunkSize => _storageChunkSize;
 
-  int get maxWriteBatchSize => bleChunkSize;
+  int get maxWriteBatchSize => _writeBatchSize;
+
+  /// Doctor firmware publishes a larger window. [storageChunk] must fit inside
+  /// [writeBatch]; callers pass the advertised storage size only when it does.
+  void applyDoctorLinkLimits({
+    required int storageChunk,
+    required int writeBatch,
+  }) {
+    if (storageChunk > 0) _storageChunkSize = storageChunk;
+    if (writeBatch > 0) _writeBatchSize = writeBatch;
+    Log.info(
+      '[Transport] doctor link limits: storage=$_storageChunkSize '
+      'batch=$_writeBatchSize',
+    );
+  }
+
+  /// Back to stock sizes after a fast transfer the firmware could not accept.
+  void useStockLinkLimits() {
+    _storageChunkSize = stockStorageChunk;
+    _writeBatchSize = stockWriteBatch;
+  }
 
   Future<void> open();
 

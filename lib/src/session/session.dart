@@ -152,6 +152,7 @@ class FlipperSession {
     }
 
     this.transport = transport;
+    if (deviceInfoFetched) _applyDoctorLinkLimits();
     _linkPhase = LinkPhase.connected;
     _announcedConnecting = false;
     _transportSub = transport.bytesStream.listen(
@@ -963,9 +964,9 @@ class FlipperSession {
 
   // The only writer in RPC mode. Commands are pipelined by default: the worker
   // hands a frame to the transport and moves on, so several commands are in
-  // flight at once and the firmware answers each by commandId. The firmware's
-  // 1024-byte input buffer is protected by the transport's flow-control credit,
-  // not by waiting here. A caller that must not overlap with the next command
+  // flight at once and the firmware answers each by commandId. The firmware
+  // input window is protected by the transport's flow-control credit and
+  // write-batch limit, not by waiting here. A caller that must not overlap with the next command
   // (pipelined: false) still parks the worker on its answer, and multi-frame
   // commands keep the TX group locked until their final frame.
   Future<void> _runWorker(int gen) async {
@@ -1298,11 +1299,52 @@ class FlipperSession {
       throw StateError('Device info fetch outlived its session');
     }
     deviceInfoFetched = true;
+    _applyDoctorLinkLimits();
     final snapshot = deviceInfoCache;
     publishDeviceInfoPatch(snapshot);
     if (!deviceInfoCompleteCtrl.isClosed) {
       deviceInfoCompleteCtrl.add(snapshot);
     }
+  }
+
+  // Stock sizes stay in force until the firmware publishes doctor.rpc.link.
+  // The storage frame is clamped to the window so protobuf overhead cannot
+  // make a single write larger than the buffer the firmware granted.
+  void _applyDoctorLinkLimits() {
+    final link = transport;
+    if (link == null) return;
+    final version = _deviceInfoInt(const [
+      'doctor_rpc_link',
+      'doctor.rpc.link',
+      'devinfo_doctor.rpc.link',
+      'devinfo_doctor_rpc_link',
+    ]);
+    if (version == null || version < 1) return;
+    final storage = _deviceInfoInt(const [
+      'doctor_rpc_storage',
+      'doctor.rpc.storage',
+      'devinfo_doctor.rpc.storage',
+      'devinfo_doctor_rpc_storage',
+    ]);
+    final buffer = _deviceInfoInt(const [
+      'doctor_rpc_buffer',
+      'doctor.rpc.buffer',
+      'devinfo_doctor.rpc.buffer',
+      'devinfo_doctor_rpc_buffer',
+    ]);
+    if (storage == null || buffer == null || storage <= 0 || buffer <= 0) {
+      return;
+    }
+    final chunk = storage < buffer ? storage : buffer;
+    link.applyDoctorLinkLimits(storageChunk: chunk, writeBatch: buffer);
+  }
+
+  int? _deviceInfoInt(List<String> keys) {
+    for (final key in keys) {
+      final value = int.tryParse(_deviceInfoCache[key]?.trim() ?? '');
+      if (value != null) return value;
+    }
+    return null;
   }
 
   // ── Events ─────────────────────────────────────────────────────────────────

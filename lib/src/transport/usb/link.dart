@@ -79,9 +79,6 @@ abstract class SerialUsbTransportBase extends Transport {
   FlipperMode get initialMode => FlipperMode.cli;
 
   @override
-  int get storageChunkSize => 1024;
-
-  @override
   Future<void> open() async {
     _eventSub = _events.listen(_onIsolateMessage);
   }
