@@ -85,6 +85,8 @@ class PendingRpc {
 
   Future<List<Main>> get future => _completer.future;
 
+  bool get isCompleted => _completer.isCompleted;
+
   // Resolves when the call settles — success or failure — and never errors,
   // so the TX worker can wait for the response without try/catch.
   Future<void> get settled => _settled.future;

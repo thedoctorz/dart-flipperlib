@@ -353,41 +353,52 @@ extension FlipperStorageApi on FlipperClient {
       return cancelled;
     }
 
-    // A dropped link can come back. A decode error means the frame did not fit
-    // the firmware's window; the fast size is abandoned for the rest of the
-    // session and the file is sent once more at the stock chunk.
+    // A decode error means the frame did not fit the firmware's window: the
+    // fast size is abandoned for the rest of the session. A dropped link says
+    // nothing about the frame size - the reconnected session re-applies the
+    // doctor limits, and downgrading it here used to leave every later file
+    // of a firmware bundle at the stock chunk. Only a second drop on the same
+    // file sends that file, alone, at the stock chunk.
     Future<bool> uploadOrRestore(int chunkSize) async {
-      try {
-        return await upload(chunkSize);
-      } catch (e) {
-        if (isCancelled?.call() ?? false) {
-          throw FlipperWriteCancelledException(path);
-        }
-        final fast = chunkSize > Transport.stockStorageChunk;
-        final sizeFallback =
-            fast && (isLinkDropError(e) || e is FlipperRpcDecodeException);
-        if (!sizeFallback && !isLinkDropError(e)) {
-          Log.error('[Storage] write "$path" failed: $e');
-          rethrow;
-        }
-        if (sizeFallback) {
+      var size = chunkSize;
+      var drops = 0;
+      while (true) {
+        try {
+          return await upload(size);
+        } catch (e) {
+          if (isCancelled?.call() ?? false) {
+            throw FlipperWriteCancelledException(path);
+          }
+          final fast = size > Transport.stockStorageChunk;
+          final decode = fast && e is FlipperRpcDecodeException;
+          final drop = isLinkDropError(e);
+          if (!decode && !drop) {
+            Log.error('[Storage] write "$path" failed: $e');
+            rethrow;
+          }
+          if (drop && ++drops > 2) rethrow;
           Log.info(
-            '[Storage] write "$path" failed at $chunkSize bytes; '
-            'retrying at ${Transport.stockStorageChunk}: $e',
+            decode
+                ? '[Storage] write "$path" failed at $size bytes; '
+                      'retrying at ${Transport.stockStorageChunk}: $e'
+                : '[Storage] write "$path" interrupted by link drop '
+                      '($drops) at $size bytes: $e',
           );
-        } else {
-          Log.info('[Storage] write "$path" interrupted by link drop: $e');
+          final restored = await waitForRpcSession(const Duration(seconds: 30));
+          if (!restored) rethrow;
+          if (decode) {
+            transport?.useStockLinkLimits();
+            size = Transport.stockStorageChunk;
+          } else if (drops >= 2) {
+            size = Transport.stockStorageChunk;
+          } else {
+            size = transport?.storageChunkSize ?? size;
+          }
+          Log.info(
+            '[Storage] link restored, restarting write "$path" '
+            'at $size bytes',
+          );
         }
-        final restored = await waitForRpcSession(const Duration(seconds: 30));
-        if (!restored) {
-          rethrow;
-        }
-        if (sizeFallback) transport?.useStockLinkLimits();
-        final retryChunk = sizeFallback
-            ? Transport.stockStorageChunk
-            : chunkSize;
-        Log.info('[Storage] link restored, restarting write "$path"');
-        return upload(retryChunk);
       }
     }
 

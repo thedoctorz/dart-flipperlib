@@ -792,6 +792,10 @@ class FlipperSession {
     }
 
     Future<void> sendFrame(Main frame) {
+      // The firmware answers the first frame it cannot act on (a file it
+      // cannot open, say) and drops the command; streaming the rest of a
+      // multi-megabyte body after that only delays the error.
+      if (pending.isCompleted) return pending.future.then((_) {});
       frame.commandId = commandId;
       if (trackedContent == Main_Content.notSet) {
         trackedContent = frame.whichContent();
