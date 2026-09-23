@@ -208,6 +208,8 @@ enum Main_Content {
   subghzTxResponse,
   subghzSettingsRequest,
   subghzSettingsResponse,
+  guiSendTextRequest,
+  guiInputFocus,
   notSet
 }
 
@@ -315,6 +317,8 @@ class Main extends $pb.GeneratedMessage {
     $9.TxResponse? subghzTxResponse,
     $9.SettingsRequest? subghzSettingsRequest,
     $9.SettingsResponse? subghzSettingsResponse,
+    $3.SendTextRequest? guiSendTextRequest,
+    $3.InputFocus? guiInputFocus,
   }) {
     final result = create();
     if (commandId != null) result.commandId = commandId;
@@ -500,6 +504,9 @@ class Main extends $pb.GeneratedMessage {
       result.subghzSettingsRequest = subghzSettingsRequest;
     if (subghzSettingsResponse != null)
       result.subghzSettingsResponse = subghzSettingsResponse;
+    if (guiSendTextRequest != null)
+      result.guiSendTextRequest = guiSendTextRequest;
+    if (guiInputFocus != null) result.guiInputFocus = guiInputFocus;
     return result;
   }
 
@@ -612,6 +619,8 @@ class Main extends $pb.GeneratedMessage {
     100: Main_Content.subghzTxResponse,
     101: Main_Content.subghzSettingsRequest,
     102: Main_Content.subghzSettingsResponse,
+    103: Main_Content.guiSendTextRequest,
+    104: Main_Content.guiInputFocus,
     0: Main_Content.notSet
   };
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(
@@ -717,7 +726,9 @@ class Main extends $pb.GeneratedMessage {
       99,
       100,
       101,
-      102
+      102,
+      103,
+      104
     ])
     ..aI(1, _omitFieldNames ? '' : 'commandId', fieldType: $pb.PbFieldType.OU3)
     ..aE<CommandStatus>(2, _omitFieldNames ? '' : 'commandStatus',
@@ -964,6 +975,10 @@ class Main extends $pb.GeneratedMessage {
     ..aOM<$9.SettingsResponse>(
         102, _omitFieldNames ? '' : 'subghzSettingsResponse',
         subBuilder: $9.SettingsResponse.create)
+    ..aOM<$3.SendTextRequest>(103, _omitFieldNames ? '' : 'guiSendTextRequest',
+        subBuilder: $3.SendTextRequest.create)
+    ..aOM<$3.InputFocus>(104, _omitFieldNames ? '' : 'guiInputFocus',
+        subBuilder: $3.InputFocus.create)
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -2347,6 +2362,28 @@ class Main extends $pb.GeneratedMessage {
   void clearSubghzSettingsResponse() => $_clearField(102);
   @$pb.TagNumber(102)
   $9.SettingsResponse ensureSubghzSettingsResponse() => $_ensure(101);
+
+  @$pb.TagNumber(103)
+  $3.SendTextRequest get guiSendTextRequest => $_getN(102);
+  @$pb.TagNumber(103)
+  set guiSendTextRequest($3.SendTextRequest value) => $_setField(103, value);
+  @$pb.TagNumber(103)
+  $core.bool hasGuiSendTextRequest() => $_has(102);
+  @$pb.TagNumber(103)
+  void clearGuiSendTextRequest() => $_clearField(103);
+  @$pb.TagNumber(103)
+  $3.SendTextRequest ensureGuiSendTextRequest() => $_ensure(102);
+
+  @$pb.TagNumber(104)
+  $3.InputFocus get guiInputFocus => $_getN(103);
+  @$pb.TagNumber(104)
+  set guiInputFocus($3.InputFocus value) => $_setField(104, value);
+  @$pb.TagNumber(104)
+  $core.bool hasGuiInputFocus() => $_has(103);
+  @$pb.TagNumber(104)
+  void clearGuiInputFocus() => $_clearField(104);
+  @$pb.TagNumber(104)
+  $3.InputFocus ensureGuiInputFocus() => $_ensure(103);
 }
 
 class Region_Band extends $pb.GeneratedMessage {

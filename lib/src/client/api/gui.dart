@@ -106,4 +106,25 @@ extension FlipperGuiApi on FlipperClient {
   }) {
     return sendRpc(Main(guiSendInputEventRequest: request), priority: priority);
   }
+
+  /// Doctor firmware pushes this with command id 0 when a text, hex, or number
+  /// keyboard is shown or hidden. Other firmware never sends it.
+  Stream<InputFocus> inputFocusStream() {
+    return broadcastStream.transform(
+      StreamTransformer<Main, InputFocus>.fromHandlers(
+        handleData: (frame, sink) {
+          if (frame.hasGuiInputFocus()) sink.add(frame.guiInputFocus);
+        },
+      ),
+    );
+  }
+
+  /// Does not wait for the command status. The Flipper applies the edit and
+  /// redraws once; the next screen frame is the confirmation.
+  Future<void> guiSendTextAndForget(
+    SendTextRequest request, {
+    FlipperRequestPriority priority = FlipperRequestPriority.rightNow,
+  }) {
+    return sendRpc(Main(guiSendTextRequest: request), priority: priority);
+  }
 }

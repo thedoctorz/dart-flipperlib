@@ -89,5 +89,52 @@ class ScreenOrientation extends $pb.ProtobufEnum {
   const ScreenOrientation._(super.value, super.name);
 }
 
+class InputFocusKind extends $pb.ProtobufEnum {
+  static const InputFocusKind NONE =
+      InputFocusKind._(0, _omitEnumNames ? '' : 'NONE');
+  static const InputFocusKind TEXT =
+      InputFocusKind._(1, _omitEnumNames ? '' : 'TEXT');
+  static const InputFocusKind BYTE =
+      InputFocusKind._(2, _omitEnumNames ? '' : 'BYTE');
+  static const InputFocusKind NUMBER =
+      InputFocusKind._(3, _omitEnumNames ? '' : 'NUMBER');
+
+  static const $core.List<InputFocusKind> values = <InputFocusKind>[
+    NONE,
+    TEXT,
+    BYTE,
+    NUMBER,
+  ];
+
+  static final $core.List<InputFocusKind?> _byValue =
+      $pb.ProtobufEnum.$_initByValueList(values, 3);
+  static InputFocusKind? valueOf($core.int value) =>
+      value < 0 || value >= _byValue.length ? null : _byValue[value];
+
+  const InputFocusKind._(super.value, super.name);
+}
+
+class TextAction extends $pb.ProtobufEnum {
+  static const TextAction INSERT =
+      TextAction._(0, _omitEnumNames ? '' : 'INSERT');
+  static const TextAction BACKSPACE =
+      TextAction._(1, _omitEnumNames ? '' : 'BACKSPACE');
+  static const TextAction SUBMIT =
+      TextAction._(2, _omitEnumNames ? '' : 'SUBMIT');
+
+  static const $core.List<TextAction> values = <TextAction>[
+    INSERT,
+    BACKSPACE,
+    SUBMIT,
+  ];
+
+  static final $core.List<TextAction?> _byValue =
+      $pb.ProtobufEnum.$_initByValueList(values, 2);
+  static TextAction? valueOf($core.int value) =>
+      value < 0 || value >= _byValue.length ? null : _byValue[value];
+
+  const TextAction._(super.value, super.name);
+}
+
 const $core.bool _omitEnumNames =
     $core.bool.fromEnvironment('protobuf.omit_enum_names');

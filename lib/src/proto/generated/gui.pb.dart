@@ -344,6 +344,127 @@ class StopVirtualDisplayRequest extends $pb.GeneratedMessage {
   static StopVirtualDisplayRequest? _defaultInstance;
 }
 
+class InputFocus extends $pb.GeneratedMessage {
+  factory InputFocus({
+    InputFocusKind? kind,
+  }) {
+    final result = create();
+    if (kind != null) result.kind = kind;
+    return result;
+  }
+
+  InputFocus._();
+
+  factory InputFocus.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory InputFocus.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'InputFocus',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'PB_Gui'),
+      createEmptyInstance: create)
+    ..aE<InputFocusKind>(1, _omitFieldNames ? '' : 'kind',
+        enumValues: InputFocusKind.values)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  InputFocus clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  InputFocus copyWith(void Function(InputFocus) updates) =>
+      super.copyWith((message) => updates(message as InputFocus)) as InputFocus;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static InputFocus create() => InputFocus._();
+  @$core.override
+  InputFocus createEmptyInstance() => create();
+  @$core.pragma('dart2js:noInline')
+  static InputFocus getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<InputFocus>(create);
+  static InputFocus? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  InputFocusKind get kind => $_getN(0);
+  @$pb.TagNumber(1)
+  set kind(InputFocusKind value) => $_setField(1, value);
+  @$pb.TagNumber(1)
+  $core.bool hasKind() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearKind() => $_clearField(1);
+}
+
+class SendTextRequest extends $pb.GeneratedMessage {
+  factory SendTextRequest({
+    TextAction? action,
+    $core.String? text,
+  }) {
+    final result = create();
+    if (action != null) result.action = action;
+    if (text != null) result.text = text;
+    return result;
+  }
+
+  SendTextRequest._();
+
+  factory SendTextRequest.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory SendTextRequest.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'SendTextRequest',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'PB_Gui'),
+      createEmptyInstance: create)
+    ..aE<TextAction>(1, _omitFieldNames ? '' : 'action',
+        enumValues: TextAction.values)
+    ..aOS(2, _omitFieldNames ? '' : 'text')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  SendTextRequest clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  SendTextRequest copyWith(void Function(SendTextRequest) updates) =>
+      super.copyWith((message) => updates(message as SendTextRequest))
+          as SendTextRequest;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static SendTextRequest create() => SendTextRequest._();
+  @$core.override
+  SendTextRequest createEmptyInstance() => create();
+  @$core.pragma('dart2js:noInline')
+  static SendTextRequest getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<SendTextRequest>(create);
+  static SendTextRequest? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  TextAction get action => $_getN(0);
+  @$pb.TagNumber(1)
+  set action(TextAction value) => $_setField(1, value);
+  @$pb.TagNumber(1)
+  $core.bool hasAction() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearAction() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get text => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set text($core.String value) => $_setString(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasText() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearText() => $_clearField(2);
+}
+
 const $core.bool _omitFieldNames =
     $core.bool.fromEnvironment('protobuf.omit_field_names');
 const $core.bool _omitMessageNames =
