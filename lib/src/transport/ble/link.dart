@@ -14,11 +14,8 @@ abstract class UniversalBleTransportBase extends Transport {
   static const String rpcStatusCharUuid =
       '19ed82ae-ed21-4c9d-4145-228e64fe0000';
   static const int _minBleMtuSize = 20;
-  // Firmware RPC_BUFFER_SIZE (serial_service.c). The firmware resets this buffer
-  // on a fresh connection and grants the full 1024-byte credit, so this is the
-  // initial flow-control credit to assume when the first credit read races ahead
-  // of that grant and returns 0.
-  static const int _rpcBufferSize = 1024;
+  static const int _stockRpcWindow = 1024;
+  static const Duration _creditWait = Duration(milliseconds: 500);
   // The firmware's ATT_MTU ceiling (CFG_BLE_MAX_ATT_MTU = 414, app_conf.h)
   // minus the 3-byte ATT write header. Never write more than this in a single
   // ATT operation: the platform would silently fall back to a long write
@@ -91,6 +88,7 @@ abstract class UniversalBleTransportBase extends Transport {
   late final String _rxSvcId;
   late final String _rxCharId;
   late final bool _txWithResponse;
+  bool get txWithResponse => _txWithResponse;
   late final bool _rxUsesIndicate;
   late int bleMtuSize;
 
@@ -106,10 +104,7 @@ abstract class UniversalBleTransportBase extends Transport {
   final List<BlePendingSend> _txQueue = [];
   Completer<void>? _txDataSignal;
   // Bytes accepted from the RPC layer that have not reached the air yet, and
-  // the ceiling that back-pressures rawWrite. One firmware credit window is
-  // exactly what the sender may coalesce in a single cycle, so queueing more
-  // would buy nothing but memory.
-  static const int _txWindowSize = _rpcBufferSize;
+  int _txWindowSize = _stockRpcWindow;
   int _txQueuedBytes = 0;
   Completer<void>? _txSpaceSignal;
 
@@ -117,6 +112,8 @@ abstract class UniversalBleTransportBase extends Transport {
   // credit notification arrived while a write was in flight.
   int _budget = 0;
   int _budgetGen = 0;
+  bool _creditCycleActive = false;
+  int _cycleRemaining = 0;
   Completer<void>? _budgetSignal;
 
   // Firmware RPC session state mirrored from the rpcStatus characteristic.
@@ -160,6 +157,7 @@ abstract class UniversalBleTransportBase extends Transport {
   // Platform hook that runs after all subscriptions are in place
   // (macOS: connection-parameter settle).
   Future<void> openExtra() async {}
+  bool get pacesWriteWithoutResponse => false;
 
   // Aborts this transport's in-flight platform connect: wakes the connect race
   // in configure and tells the platform to stop the pending connection so
@@ -271,6 +269,7 @@ abstract class UniversalBleTransportBase extends Transport {
     String? rpcStatusSvc;
     String? rpcStatusChar;
     var txWithResponse = true;
+    var txCanWriteNoRsp = false;
     var rxUsesIndicate = false;
 
     for (final service in services) {
@@ -281,10 +280,8 @@ abstract class UniversalBleTransportBase extends Transport {
         if (cid == flipperBleTxUuid) {
           txSvc = service.uuid;
           txChar = char.uuid;
-          // Write WITH response: each ATT write is acknowledged by the
-          // peripheral before the next one goes out. Empirically stable on
-          // this firmware; do not switch to write-without-response.
           txWithResponse = char.canWrite;
+          txCanWriteNoRsp = char.canWriteNoRsp;
         }
         if (cid == flipperBleRxUuid) {
           rxSvc = service.uuid;
@@ -320,7 +317,8 @@ abstract class UniversalBleTransportBase extends Transport {
     _txCharId = txChar!;
     _rxSvcId = rxSvc!;
     _rxCharId = rxChar!;
-    _txWithResponse = txWithResponse;
+    _txWithResponse =
+        !(txCanWriteNoRsp && pacesWriteWithoutResponse) && txWithResponse;
     _rxUsesIndicate = rxUsesIndicate;
     bleMtuSize = (negotiatedMtu - 3).clamp(_minBleMtuSize, maxBleMtuSize);
     _overflowSvcId = overflowSvc;
@@ -389,6 +387,7 @@ abstract class UniversalBleTransportBase extends Transport {
     }
 
     await _subscribeRpcStatus(deviceId);
+    await _readInitialCredit(deviceId);
     await openExtra();
     // A drop during the rpcStatus subscribe (swallowed below) or the openExtra
     // settle must not commit a dead transport; fail the connect honestly.
@@ -571,8 +570,14 @@ abstract class UniversalBleTransportBase extends Transport {
         timeout: _pairingOpTimeout,
       ),
     );
+  }
 
-    // 4. Authoritative initial credit — the ONLY overflow read of the session.
+  Future<void> _readInitialCredit(String deviceId) async {
+    if (_rpcStatusAvailable && !_rpcSessionActive) {
+      final signal = _rpcActiveSignal ??= Completer<void>();
+      await _awaitSignal(signal, const Duration(seconds: 2));
+      if (identical(_rpcActiveSignal, signal)) _rpcActiveSignal = null;
+    }
     final initialBudget = await _runPairingSensitive(
       () => _ops.read(
         deviceId,
@@ -583,17 +588,13 @@ abstract class UniversalBleTransportBase extends Transport {
     );
     _applyOverflowValue(initialBudget);
 
-    // A fresh connection resets the firmware RPC buffer and grants the full
-    // 1024-byte credit. If the read above raced ahead of that grant and saw 0,
-    // seed the standard buffer size so the first TX cycle is not stalled waiting
-    // for a credit notification that effectively already happened.
     if (_budget <= 0) {
-      _budget = _rpcBufferSize;
-      _budgetGen += 1;
-      Log.info(
-        '[BLE] initial overflow credit was 0; seeding RPC_BUFFER_SIZE '
-        '($_rpcBufferSize) on fresh connection',
-      );
+      final signal = _budgetSignal ??= Completer<void>();
+      await _awaitSignal(signal, _creditWait);
+      if (identical(_budgetSignal, signal)) _budgetSignal = null;
+    }
+    if (_budget <= 0) {
+      Log.info('[BLE] initial overflow credit was 0; waiting for a grant');
     }
   }
 
@@ -828,6 +829,16 @@ abstract class UniversalBleTransportBase extends Transport {
       Log.error('[BLE] overflow value too short (${bytes.length} bytes)');
       return;
     }
+    final grew = remaining > _txWindowSize;
+    if (grew) _txWindowSize = remaining;
+    if (remaining <= 0 || _heldCredit > 0) {
+      if (grew) {
+        final space = _txSpaceSignal;
+        _txSpaceSignal = null;
+        fireOnce(space);
+      }
+      return;
+    }
     _budget = remaining;
     _budgetGen += 1;
     if (Log.debugOn) {
@@ -969,13 +980,25 @@ abstract class UniversalBleTransportBase extends Transport {
     _senderRunning = false;
   }
 
+  int get _heldCredit => _creditCycleActive ? _cycleRemaining : _budget;
   // Sends queued frames within one credit cycle; never sends a single byte
   // beyond the credit the firmware granted.
   Future<void> _drainBudgetCycle() async {
     var cycleRemaining = _budget;
     final cycleGen = _budgetGen;
     _budget = 0;
+    _creditCycleActive = true;
+    _cycleRemaining = cycleRemaining;
 
+    try {
+      await _drainBudgetCycleBody(cycleGen, cycleRemaining);
+    } finally {
+      _creditCycleActive = false;
+      _cycleRemaining = 0;
+    }
+  }
+
+  Future<void> _drainBudgetCycleBody(int cycleGen, int cycleRemaining) async {
     while (isActive && cycleRemaining > 0) {
       if (_txQueue.isEmpty) {
         final signal = _txDataSignal = Completer<void>();
@@ -1020,6 +1043,8 @@ abstract class UniversalBleTransportBase extends Transport {
         }
       }
 
+      cycleRemaining -= sendLength;
+      _cycleRemaining = cycleRemaining;
       try {
         await _sendMessage(batch);
       } catch (e) {
@@ -1042,9 +1067,6 @@ abstract class UniversalBleTransportBase extends Transport {
         if (pending.remainingLength == 0) _txQueue.removeAt(0);
       }
       _releaseTxBytes(sendLength);
-      cycleRemaining -= sendLength;
-      // A fresh credit notification is authoritative: it already accounts for
-      // everything sent so far, so the old cycle's remainder must be dropped.
       if (_budgetGen != cycleGen) return;
     }
 

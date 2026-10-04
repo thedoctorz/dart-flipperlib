@@ -47,13 +47,18 @@ class TransportPendingWrite {
 // closeReason keeps the diagnosis. close() is the orderly path and never
 // throws.
 abstract class Transport {
-  static const int bleChunkSize = 512;
+  static const int stockStorageChunk = 512;
+  static const int stockWriteBatch = 512;
+
+  static const int bleChunkSize = stockStorageChunk;
 
   final _bytesCtrl = StreamController<List<int>>.broadcast();
   final List<TransportPendingWrite> _writeQueue = [];
   bool _writePumpRunning = false;
   TransportLifecycle _lifecycle = TransportLifecycle.active;
   Object? _closeReason;
+  int _storageChunkSize = stockStorageChunk;
+  int _writeBatchSize = stockWriteBatch;
 
   Stream<List<int>> get bytesStream => _bytesCtrl.stream;
 
@@ -72,9 +77,24 @@ abstract class Transport {
 
   FlipperMode get initialMode;
 
-  int get storageChunkSize => bleChunkSize;
+  int get storageChunkSize => _storageChunkSize;
 
-  int get maxWriteBatchSize => bleChunkSize;
+  int get maxWriteBatchSize => _writeBatchSize;
+  void applyDoctorLinkLimits({
+    required int storageChunk,
+    required int writeBatch,
+  }) {
+    if (storageChunk > 0) _storageChunkSize = storageChunk;
+    if (writeBatch > 0) _writeBatchSize = writeBatch;
+    Log.info(
+      '[Transport] doctor link limits: storage=$_storageChunkSize '
+      'batch=$_writeBatchSize',
+    );
+  }
+  void useStockLinkLimits() {
+    _storageChunkSize = stockStorageChunk;
+    _writeBatchSize = stockWriteBatch;
+  }
 
   Future<void> open();
 

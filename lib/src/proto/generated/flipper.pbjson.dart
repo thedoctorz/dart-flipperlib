@@ -884,6 +884,114 @@ const Main$json = {
       '9': 0,
       '10': 'networkWebsocketOpenRequest'
     },
+    {
+      '1': 'subghz_decode_raw_request',
+      '3': 91,
+      '4': 1,
+      '5': 11,
+      '6': '.PB_SubGhz.DecodeRawRequest',
+      '9': 0,
+      '10': 'subghzDecodeRawRequest'
+    },
+    {
+      '1': 'subghz_decode_raw_response',
+      '3': 92,
+      '4': 1,
+      '5': 11,
+      '6': '.PB_SubGhz.DecodeRawResponse',
+      '9': 0,
+      '10': 'subghzDecodeRawResponse'
+    },
+    {
+      '1': 'subghz_decode_raw_stop_request',
+      '3': 93,
+      '4': 1,
+      '5': 11,
+      '6': '.PB_SubGhz.DecodeRawStopRequest',
+      '9': 0,
+      '10': 'subghzDecodeRawStopRequest'
+    },
+    {
+      '1': 'subghz_rx_start_request',
+      '3': 94,
+      '4': 1,
+      '5': 11,
+      '6': '.PB_SubGhz.RxStartRequest',
+      '9': 0,
+      '10': 'subghzRxStartRequest'
+    },
+    {
+      '1': 'subghz_rx_stop_request',
+      '3': 95,
+      '4': 1,
+      '5': 11,
+      '6': '.PB_SubGhz.RxStopRequest',
+      '9': 0,
+      '10': 'subghzRxStopRequest'
+    },
+    {
+      '1': 'subghz_rx_config_request',
+      '3': 96,
+      '4': 1,
+      '5': 11,
+      '6': '.PB_SubGhz.RxConfigRequest',
+      '9': 0,
+      '10': 'subghzRxConfigRequest'
+    },
+    {
+      '1': 'subghz_rx_state_response',
+      '3': 97,
+      '4': 1,
+      '5': 11,
+      '6': '.PB_SubGhz.RxStateResponse',
+      '9': 0,
+      '10': 'subghzRxStateResponse'
+    },
+    {
+      '1': 'subghz_rx_event',
+      '3': 98,
+      '4': 1,
+      '5': 11,
+      '6': '.PB_SubGhz.RxEvent',
+      '9': 0,
+      '10': 'subghzRxEvent'
+    },
+    {
+      '1': 'subghz_tx_request',
+      '3': 99,
+      '4': 1,
+      '5': 11,
+      '6': '.PB_SubGhz.TxRequest',
+      '9': 0,
+      '10': 'subghzTxRequest'
+    },
+    {
+      '1': 'subghz_tx_response',
+      '3': 100,
+      '4': 1,
+      '5': 11,
+      '6': '.PB_SubGhz.TxResponse',
+      '9': 0,
+      '10': 'subghzTxResponse'
+    },
+    {
+      '1': 'subghz_settings_request',
+      '3': 101,
+      '4': 1,
+      '5': 11,
+      '6': '.PB_SubGhz.SettingsRequest',
+      '9': 0,
+      '10': 'subghzSettingsRequest'
+    },
+    {
+      '1': 'subghz_settings_response',
+      '3': 102,
+      '4': 1,
+      '5': 11,
+      '6': '.PB_SubGhz.SettingsResponse',
+      '9': 0,
+      '10': 'subghzSettingsResponse'
+    },
   ],
   '8': [
     {'1': 'content'},
@@ -1026,7 +1134,25 @@ final $typed_data.Uint8List mainDescriptor = $convert.base64Decode(
     'JuZXR3b3JrSHR0cFJlcXVlc3QSTgoVbmV0d29ya19odHRwX3Jlc3BvbnNlGFkgASgLMhguUEJf'
     'TmV0d29yay5IdHRwUmVzcG9uc2VIAFITbmV0d29ya0h0dHBSZXNwb25zZRJnCh5uZXR3b3JrX3'
     'dlYnNvY2tldF9vcGVuX3JlcXVlc3QYWiABKAsyIC5QQl9OZXR3b3JrLldlYlNvY2tldE9wZW5S'
-    'ZXF1ZXN0SABSG25ldHdvcmtXZWJzb2NrZXRPcGVuUmVxdWVzdEIJCgdjb250ZW50');
+    'ZXF1ZXN0SABSG25ldHdvcmtXZWJzb2NrZXRPcGVuUmVxdWVzdBJYChlzdWJnaHpfZGVjb2RlX3'
+    'Jhd19yZXF1ZXN0GFsgASgLMhsuUEJfU3ViR2h6LkRlY29kZVJhd1JlcXVlc3RIAFIWc3ViZ2h6'
+    'RGVjb2RlUmF3UmVxdWVzdBJbChpzdWJnaHpfZGVjb2RlX3Jhd19yZXNwb25zZRhcIAEoCzIcLl'
+    'BCX1N1Ykdoei5EZWNvZGVSYXdSZXNwb25zZUgAUhdzdWJnaHpEZWNvZGVSYXdSZXNwb25zZRJl'
+    'Ch5zdWJnaHpfZGVjb2RlX3Jhd19zdG9wX3JlcXVlc3QYXSABKAsyHy5QQl9TdWJHaHouRGVjb2'
+    'RlUmF3U3RvcFJlcXVlc3RIAFIac3ViZ2h6RGVjb2RlUmF3U3RvcFJlcXVlc3QSUgoXc3ViZ2h6'
+    'X3J4X3N0YXJ0X3JlcXVlc3QYXiABKAsyGS5QQl9TdWJHaHouUnhTdGFydFJlcXVlc3RIAFIUc3'
+    'ViZ2h6UnhTdGFydFJlcXVlc3QSTwoWc3ViZ2h6X3J4X3N0b3BfcmVxdWVzdBhfIAEoCzIYLlBC'
+    'X1N1Ykdoei5SeFN0b3BSZXF1ZXN0SABSE3N1YmdoelJ4U3RvcFJlcXVlc3QSVQoYc3ViZ2h6X3'
+    'J4X2NvbmZpZ19yZXF1ZXN0GGAgASgLMhouUEJfU3ViR2h6LlJ4Q29uZmlnUmVxdWVzdEgAUhVz'
+    'dWJnaHpSeENvbmZpZ1JlcXVlc3QSVQoYc3ViZ2h6X3J4X3N0YXRlX3Jlc3BvbnNlGGEgASgLMh'
+    'ouUEJfU3ViR2h6LlJ4U3RhdGVSZXNwb25zZUgAUhVzdWJnaHpSeFN0YXRlUmVzcG9uc2USPAoP'
+    'c3ViZ2h6X3J4X2V2ZW50GGIgASgLMhIuUEJfU3ViR2h6LlJ4RXZlbnRIAFINc3ViZ2h6UnhFdm'
+    'VudBJCChFzdWJnaHpfdHhfcmVxdWVzdBhjIAEoCzIULlBCX1N1Ykdoei5UeFJlcXVlc3RIAFIP'
+    'c3ViZ2h6VHhSZXF1ZXN0EkUKEnN1Ymdoel90eF9yZXNwb25zZRhkIAEoCzIVLlBCX1N1Ykdoei'
+    '5UeFJlc3BvbnNlSABSEHN1YmdoelR4UmVzcG9uc2USVAoXc3ViZ2h6X3NldHRpbmdzX3JlcXVl'
+    'c3QYZSABKAsyGi5QQl9TdWJHaHouU2V0dGluZ3NSZXF1ZXN0SABSFXN1YmdoelNldHRpbmdzUm'
+    'VxdWVzdBJXChhzdWJnaHpfc2V0dGluZ3NfcmVzcG9uc2UYZiABKAsyGy5QQl9TdWJHaHouU2V0'
+    'dGluZ3NSZXNwb25zZUgAUhZzdWJnaHpTZXR0aW5nc1Jlc3BvbnNlQgkKB2NvbnRlbnQ=');
 
 @$core.Deprecated('Use regionDescriptor instead')
 const Region$json = {

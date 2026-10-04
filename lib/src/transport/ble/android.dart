@@ -48,6 +48,8 @@ class AndroidBleTransport extends UniversalBleTransportBase {
   AndroidBleTransport._(BleDiscoveredDevice device)
     : super(device, UniversalBleOps());
 
+  @override
+  bool get pacesWriteWithoutResponse => true;
   static Future<AndroidBleTransport> create(BleDiscoveredDevice device) async {
     final transport = AndroidBleTransport._(device);
     await transport.configure();

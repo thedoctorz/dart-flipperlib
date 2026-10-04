@@ -152,6 +152,7 @@ class FlipperSession {
     }
 
     this.transport = transport;
+    if (deviceInfoFetched) _applyDoctorLinkLimits();
     _linkPhase = LinkPhase.connected;
     _announcedConnecting = false;
     _transportSub = transport.bytesStream.listen(
@@ -791,6 +792,7 @@ class FlipperSession {
     }
 
     Future<void> sendFrame(Main frame) {
+      if (pending.isCompleted) return pending.future.then((_) {});
       frame.commandId = commandId;
       if (trackedContent == Main_Content.notSet) {
         trackedContent = frame.whichContent();
@@ -1298,11 +1300,48 @@ class FlipperSession {
       throw StateError('Device info fetch outlived its session');
     }
     deviceInfoFetched = true;
+    _applyDoctorLinkLimits();
     final snapshot = deviceInfoCache;
     publishDeviceInfoPatch(snapshot);
     if (!deviceInfoCompleteCtrl.isClosed) {
       deviceInfoCompleteCtrl.add(snapshot);
     }
+  }
+  void _applyDoctorLinkLimits() {
+    final link = transport;
+    if (link == null) return;
+    final version = _deviceInfoInt(const [
+      'doctor_rpc_link',
+      'doctor.rpc.link',
+      'devinfo_doctor.rpc.link',
+      'devinfo_doctor_rpc_link',
+    ]);
+    if (version == null || version < 1) return;
+    final storage = _deviceInfoInt(const [
+      'doctor_rpc_storage',
+      'doctor.rpc.storage',
+      'devinfo_doctor.rpc.storage',
+      'devinfo_doctor_rpc_storage',
+    ]);
+    final buffer = _deviceInfoInt(const [
+      'doctor_rpc_buffer',
+      'doctor.rpc.buffer',
+      'devinfo_doctor.rpc.buffer',
+      'devinfo_doctor_rpc_buffer',
+    ]);
+    if (storage == null || buffer == null || storage <= 0 || buffer <= 0) {
+      return;
+    }
+    final chunk = storage < buffer ? storage : buffer;
+    link.applyDoctorLinkLimits(storageChunk: chunk, writeBatch: buffer);
+  }
+
+  int? _deviceInfoInt(List<String> keys) {
+    for (final key in keys) {
+      final value = int.tryParse(_deviceInfoCache[key]?.trim() ?? '');
+      if (value != null) return value;
+    }
+    return null;
   }
 
   // ── Events ─────────────────────────────────────────────────────────────────

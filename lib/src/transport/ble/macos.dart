@@ -54,13 +54,14 @@ class MacosBleTransport extends UniversalBleTransportBase {
   MacosBleTransport._(BleDiscoveredDevice device)
     : super(device, UniversalBleOps());
 
+  @override
+  bool get pacesWriteWithoutResponse => true;
   static Future<MacosBleTransport> create(BleDiscoveredDevice device) async {
     final transport = MacosBleTransport._(device);
     // configure releases the platform link itself if it fails.
     await transport.configure();
     // macOS auto-negotiates MTU. If the plugin reports the default payload,
-    // fall back to the stable payload cap (see maxBleMtuSize).
-    if (transport.bleMtuSize < 100) {
+    if (transport.bleMtuSize < 100 && transport.txWithResponse) {
       transport.bleMtuSize = UniversalBleTransportBase.maxBleMtuSize;
       Log.info(
         '[BLE] macOS: MTU not negotiated, using mtu=${transport.bleMtuSize}',

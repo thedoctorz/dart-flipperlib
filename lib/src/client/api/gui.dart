@@ -106,4 +106,19 @@ extension FlipperGuiApi on FlipperClient {
   }) {
     return sendRpc(Main(guiSendInputEventRequest: request), priority: priority);
   }
+  Stream<InputFocus> inputFocusStream() {
+    return broadcastStream.transform(
+      StreamTransformer<Main, InputFocus>.fromHandlers(
+        handleData: (frame, sink) {
+          if (frame.hasGuiInputFocus()) sink.add(frame.guiInputFocus);
+        },
+      ),
+    );
+  }
+  Future<void> guiSendTextAndForget(
+    SendTextRequest request, {
+    FlipperRequestPriority priority = FlipperRequestPriority.rightNow,
+  }) {
+    return sendRpc(Main(guiSendTextRequest: request), priority: priority);
+  }
 }

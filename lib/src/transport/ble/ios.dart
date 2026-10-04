@@ -46,6 +46,8 @@ class IosBleTransport extends UniversalBleTransportBase {
   IosBleTransport._(BleDiscoveredDevice device)
     : super(device, UniversalBleOps());
 
+  @override
+  bool get pacesWriteWithoutResponse => true;
   static Future<IosBleTransport> create(BleDiscoveredDevice device) async {
     final transport = IosBleTransport._(device);
     await transport.configure();

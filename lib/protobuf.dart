@@ -10,3 +10,4 @@ export 'src/proto/generated/property.pb.dart';
 export 'src/proto/generated/desktop.pb.dart';
 export 'src/proto/generated/network.pb.dart';
 export 'src/proto/generated/gps.pb.dart';
+export 'src/proto/generated/subghz.pb.dart';

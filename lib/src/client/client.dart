@@ -444,6 +444,38 @@ class FlipperClient {
   Future<void> initialize() async {
     await blePlatform.requestPermissions();
   }
+  Future<bool> isBleAvailable() async {
+    try {
+      return await uble.UniversalBle.getBluetoothAvailabilityState() ==
+          uble.AvailabilityState.poweredOn;
+    } catch (e) {
+      Log.info('[BLE] availability unavailable: $e');
+      return false;
+    }
+  }
+  Stream<bool> get bleAvailability {
+    _bleAvailabilityCtrl ??= _openBleAvailability();
+    return _bleAvailabilityCtrl!.stream;
+  }
+
+  StreamController<bool>? _bleAvailabilityCtrl;
+
+  StreamController<bool> _openBleAvailability() {
+    late final StreamController<bool> controller;
+    controller = StreamController<bool>.broadcast(
+      onListen: () {
+        uble.UniversalBle.onAvailabilityChange = (state) {
+          if (controller.isClosed) return;
+          controller.add(state == uble.AvailabilityState.poweredOn);
+        };
+      },
+      onCancel: () {
+        if (controller.hasListener) return;
+        uble.UniversalBle.onAvailabilityChange = null;
+      },
+    );
+    return controller;
+  }
 
   Future<List<FlipperDevice>> refreshDevices({
     Duration bleTimeout = const Duration(seconds: 10),
@@ -1377,6 +1409,12 @@ class FlipperClient {
     await deviceInfoWatchCtrl.close();
     await storageMutationCtrl.close();
     await _sessionsCtrl.close();
+    final availability = _bleAvailabilityCtrl;
+    _bleAvailabilityCtrl = null;
+    if (availability != null) {
+      uble.UniversalBle.onAvailabilityChange = null;
+      await availability.close();
+    }
   }
 }
 
