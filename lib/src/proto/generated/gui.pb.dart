@@ -89,7 +89,13 @@ class ScreenFrame extends $pb.GeneratedMessage {
 }
 
 class StartScreenStreamRequest extends $pb.GeneratedMessage {
-  factory StartScreenStreamRequest() => create();
+  factory StartScreenStreamRequest({
+    $core.bool? inputFocus,
+  }) {
+    final result = create();
+    if (inputFocus != null) result.inputFocus = inputFocus;
+    return result;
+  }
 
   StartScreenStreamRequest._();
 
@@ -104,6 +110,7 @@ class StartScreenStreamRequest extends $pb.GeneratedMessage {
       _omitMessageNames ? '' : 'StartScreenStreamRequest',
       package: const $pb.PackageName(_omitMessageNames ? '' : 'PB_Gui'),
       createEmptyInstance: create)
+    ..aOB(1, _omitFieldNames ? '' : 'inputFocus')
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -125,6 +132,17 @@ class StartScreenStreamRequest extends $pb.GeneratedMessage {
   static StartScreenStreamRequest getDefault() => _defaultInstance ??=
       $pb.GeneratedMessage.$_defaultFor<StartScreenStreamRequest>(create);
   static StartScreenStreamRequest? _defaultInstance;
+
+  /// Also push InputFocus while streaming. Off by default: clients built against an older
+  /// schema (qFlipper, the official apps) cannot skip a Main message they do not know.
+  @$pb.TagNumber(1)
+  $core.bool get inputFocus => $_getBF(0);
+  @$pb.TagNumber(1)
+  set inputFocus($core.bool value) => $_setBool(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasInputFocus() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearInputFocus() => $_clearField(1);
 }
 
 class StopScreenStreamRequest extends $pb.GeneratedMessage {
@@ -344,60 +362,6 @@ class StopVirtualDisplayRequest extends $pb.GeneratedMessage {
   static StopVirtualDisplayRequest? _defaultInstance;
 }
 
-class InputFocus extends $pb.GeneratedMessage {
-  factory InputFocus({
-    InputFocusKind? kind,
-  }) {
-    final result = create();
-    if (kind != null) result.kind = kind;
-    return result;
-  }
-
-  InputFocus._();
-
-  factory InputFocus.fromBuffer($core.List<$core.int> data,
-          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
-      create()..mergeFromBuffer(data, registry);
-  factory InputFocus.fromJson($core.String json,
-          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
-      create()..mergeFromJson(json, registry);
-
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
-      _omitMessageNames ? '' : 'InputFocus',
-      package: const $pb.PackageName(_omitMessageNames ? '' : 'PB_Gui'),
-      createEmptyInstance: create)
-    ..aE<InputFocusKind>(1, _omitFieldNames ? '' : 'kind',
-        enumValues: InputFocusKind.values)
-    ..hasRequiredFields = false;
-
-  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
-  InputFocus clone() => deepCopy();
-  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
-  InputFocus copyWith(void Function(InputFocus) updates) =>
-      super.copyWith((message) => updates(message as InputFocus)) as InputFocus;
-
-  @$core.override
-  $pb.BuilderInfo get info_ => _i;
-
-  @$core.pragma('dart2js:noInline')
-  static InputFocus create() => InputFocus._();
-  @$core.override
-  InputFocus createEmptyInstance() => create();
-  @$core.pragma('dart2js:noInline')
-  static InputFocus getDefault() => _defaultInstance ??=
-      $pb.GeneratedMessage.$_defaultFor<InputFocus>(create);
-  static InputFocus? _defaultInstance;
-
-  @$pb.TagNumber(1)
-  InputFocusKind get kind => $_getN(0);
-  @$pb.TagNumber(1)
-  set kind(InputFocusKind value) => $_setField(1, value);
-  @$pb.TagNumber(1)
-  $core.bool hasKind() => $_has(0);
-  @$pb.TagNumber(1)
-  void clearKind() => $_clearField(1);
-}
-
 class SendTextRequest extends $pb.GeneratedMessage {
   factory SendTextRequest({
     TextAction? action,
@@ -464,6 +428,61 @@ class SendTextRequest extends $pb.GeneratedMessage {
   @$pb.TagNumber(2)
   void clearText() => $_clearField(2);
 }
+
+class InputFocus extends $pb.GeneratedMessage {
+  factory InputFocus({
+    InputFocusKind? kind,
+  }) {
+    final result = create();
+    if (kind != null) result.kind = kind;
+    return result;
+  }
+
+  InputFocus._();
+
+  factory InputFocus.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory InputFocus.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'InputFocus',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'PB_Gui'),
+      createEmptyInstance: create)
+    ..aE<InputFocusKind>(1, _omitFieldNames ? '' : 'kind',
+        enumValues: InputFocusKind.values)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  InputFocus clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  InputFocus copyWith(void Function(InputFocus) updates) =>
+      super.copyWith((message) => updates(message as InputFocus)) as InputFocus;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static InputFocus create() => InputFocus._();
+  @$core.override
+  InputFocus createEmptyInstance() => create();
+  @$core.pragma('dart2js:noInline')
+  static InputFocus getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<InputFocus>(create);
+  static InputFocus? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  InputFocusKind get kind => $_getN(0);
+  @$pb.TagNumber(1)
+  set kind(InputFocusKind value) => $_setField(1, value);
+  @$pb.TagNumber(1)
+  $core.bool hasKind() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearKind() => $_clearField(1);
+}
+
 const $core.bool _omitFieldNames =
     $core.bool.fromEnvironment('protobuf.omit_field_names');
 const $core.bool _omitMessageNames =

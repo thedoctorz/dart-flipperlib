@@ -1,3 +1,14 @@
+// This is a generated file - do not edit.
+//
+// Generated from subghz.proto.
+
+// @dart = 3.3
+
+// ignore_for_file: annotate_overrides, camel_case_types, comment_references
+// ignore_for_file: constant_identifier_names
+// ignore_for_file: curly_braces_in_flow_control_structures
+// ignore_for_file: deprecated_member_use_from_same_package, library_prefixes
+// ignore_for_file: non_constant_identifier_names, prefer_relative_imports
 
 import 'dart:core' as $core;
 
@@ -154,6 +165,7 @@ class DecodeRawResponse extends $pb.GeneratedMessage {
   $core.bool hasHitCount() => $_has(3);
   @$pb.TagNumber(4)
   void clearHitCount() => $_clearField(4);
+
   @$pb.TagNumber(5)
   $core.int get activity => $_getIZ(4);
   @$pb.TagNumber(5)
@@ -163,6 +175,7 @@ class DecodeRawResponse extends $pb.GeneratedMessage {
   @$pb.TagNumber(5)
   void clearActivity() => $_clearField(5);
 }
+
 class SettingsRequest extends $pb.GeneratedMessage {
   factory SettingsRequest() => create();
 
@@ -262,6 +275,7 @@ class SettingsResponse extends $pb.GeneratedMessage {
 
   @$pb.TagNumber(2)
   $pb.PbList<$core.int> get hopperFrequencies => $_getList(1);
+
   @$pb.TagNumber(3)
   $pb.PbList<$core.String> get presets => $_getList(2);
 
@@ -274,6 +288,7 @@ class SettingsResponse extends $pb.GeneratedMessage {
   @$pb.TagNumber(4)
   void clearDefaultFrequency() => $_clearField(4);
 }
+
 class DecodeRawStopRequest extends $pb.GeneratedMessage {
   factory DecodeRawStopRequest() => create();
 
@@ -437,6 +452,7 @@ class RxStartRequest extends $pb.GeneratedMessage {
   $core.bool hasDevice() => $_has(5);
   @$pb.TagNumber(6)
   void clearDevice() => $_clearField(6);
+
   @$pb.TagNumber(7)
   $core.bool get capturePulses => $_getBF(6);
   @$pb.TagNumber(7)
@@ -445,6 +461,7 @@ class RxStartRequest extends $pb.GeneratedMessage {
   $core.bool hasCapturePulses() => $_has(6);
   @$pb.TagNumber(7)
   void clearCapturePulses() => $_clearField(7);
+
   @$pb.TagNumber(8)
   $core.int get ignoreFilter => $_getIZ(7);
   @$pb.TagNumber(8)
@@ -453,6 +470,7 @@ class RxStartRequest extends $pb.GeneratedMessage {
   $core.bool hasIgnoreFilter() => $_has(7);
   @$pb.TagNumber(8)
   void clearIgnoreFilter() => $_clearField(8);
+
   @$pb.TagNumber(9)
   $core.bool get modulationHopping => $_getBF(8);
   @$pb.TagNumber(9)
@@ -470,6 +488,7 @@ class RxStartRequest extends $pb.GeneratedMessage {
   $core.bool hasPresetB() => $_has(9);
   @$pb.TagNumber(10)
   void clearPresetB() => $_clearField(10);
+
   @$pb.TagNumber(11)
   $core.bool get sound => $_getBF(10);
   @$pb.TagNumber(11)
@@ -517,6 +536,7 @@ class RxStopRequest extends $pb.GeneratedMessage {
       $pb.GeneratedMessage.$_defaultFor<RxStopRequest>(create);
   static RxStopRequest? _defaultInstance;
 }
+
 class RxConfigRequest extends $pb.GeneratedMessage {
   factory RxConfigRequest({
     $core.int? frequency,
@@ -662,6 +682,7 @@ class RxConfigRequest extends $pb.GeneratedMessage {
   @$pb.TagNumber(9)
   void clearSound() => $_clearField(9);
 }
+
 class RxStateResponse extends $pb.GeneratedMessage {
   factory RxStateResponse({
     $core.bool? running,
@@ -837,6 +858,7 @@ class RxStateResponse extends $pb.GeneratedMessage {
   @$pb.TagNumber(11)
   void clearSound() => $_clearField(11);
 }
+
 class RxEvent extends $pb.GeneratedMessage {
   factory RxEvent({
     RxEventType? type,
@@ -918,6 +940,7 @@ class RxEvent extends $pb.GeneratedMessage {
   $core.bool hasType() => $_has(0);
   @$pb.TagNumber(1)
   void clearType() => $_clearField(1);
+
   @$pb.TagNumber(2)
   $core.List<$core.int> get rssiSamples => $_getN(1);
   @$pb.TagNumber(2)
@@ -944,6 +967,7 @@ class RxEvent extends $pb.GeneratedMessage {
   $core.bool hasNoiseFloor() => $_has(3);
   @$pb.TagNumber(4)
   void clearNoiseFloor() => $_clearField(4);
+
   @$pb.TagNumber(5)
   $core.String get protocol => $_getSZ(4);
   @$pb.TagNumber(5)
@@ -988,9 +1012,11 @@ class RxEvent extends $pb.GeneratedMessage {
   $core.bool hasTransmittable() => $_has(8);
   @$pb.TagNumber(9)
   void clearTransmittable() => $_clearField(9);
+
   @$pb.TagNumber(10)
   $pb.PbList<$core.int> get pulses => $_getList(9);
 }
+
 class TxRequest extends $pb.GeneratedMessage {
   factory TxRequest({
     $core.String? flipperFormat,

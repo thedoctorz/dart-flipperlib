@@ -24,7 +24,7 @@ extension FlipperGuiApi on FlipperClient {
     FlipperRequestPriority priority = FlipperRequestPriority.unattended,
   }) {
     return callRpcFrames(
-      Main(guiStartScreenStreamRequest: StartScreenStreamRequest()),
+      Main(guiStartScreenStreamRequest: StartScreenStreamRequest(inputFocus: true)),
       timeout: timeout,
       priority: priority,
     );

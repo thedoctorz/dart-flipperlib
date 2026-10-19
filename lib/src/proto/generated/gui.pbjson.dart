@@ -66,6 +66,36 @@ final $typed_data.Uint8List screenOrientationDescriptor = $convert.base64Decode(
     'ChFTY3JlZW5PcmllbnRhdGlvbhIOCgpIT1JJWk9OVEFMEAASEwoPSE9SSVpPTlRBTF9GTElQEA'
     'ESDAoIVkVSVElDQUwQAhIRCg1WRVJUSUNBTF9GTElQEAM=');
 
+@$core.Deprecated('Use inputFocusKindDescriptor instead')
+const InputFocusKind$json = {
+  '1': 'InputFocusKind',
+  '2': [
+    {'1': 'NONE', '2': 0},
+    {'1': 'TEXT', '2': 1},
+    {'1': 'BYTE', '2': 2},
+    {'1': 'NUMBER', '2': 3},
+  ],
+};
+
+/// Descriptor for `InputFocusKind`. Decode as a `google.protobuf.EnumDescriptorProto`.
+final $typed_data.Uint8List inputFocusKindDescriptor = $convert.base64Decode(
+    'Cg5JbnB1dEZvY3VzS2luZBIICgROT05FEAASCAoEVEVYVBABEggKBEJZVEUQAhIKCgZOVU1CRV'
+    'IQAw==');
+
+@$core.Deprecated('Use textActionDescriptor instead')
+const TextAction$json = {
+  '1': 'TextAction',
+  '2': [
+    {'1': 'INSERT', '2': 0},
+    {'1': 'BACKSPACE', '2': 1},
+    {'1': 'SUBMIT', '2': 2},
+  ],
+};
+
+/// Descriptor for `TextAction`. Decode as a `google.protobuf.EnumDescriptorProto`.
+final $typed_data.Uint8List textActionDescriptor = $convert.base64Decode(
+    'CgpUZXh0QWN0aW9uEgoKBklOU0VSVBAAEg0KCUJBQ0tTUEFDRRABEgoKBlNVQk1JVBAC');
+
 @$core.Deprecated('Use screenFrameDescriptor instead')
 const ScreenFrame$json = {
   '1': 'ScreenFrame',
@@ -90,11 +120,16 @@ final $typed_data.Uint8List screenFrameDescriptor = $convert.base64Decode(
 @$core.Deprecated('Use startScreenStreamRequestDescriptor instead')
 const StartScreenStreamRequest$json = {
   '1': 'StartScreenStreamRequest',
+  '2': [
+    {'1': 'input_focus', '3': 1, '4': 1, '5': 8, '10': 'inputFocus'},
+  ],
 };
 
 /// Descriptor for `StartScreenStreamRequest`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List startScreenStreamRequestDescriptor =
-    $convert.base64Decode('ChhTdGFydFNjcmVlblN0cmVhbVJlcXVlc3Q=');
+    $convert.base64Decode(
+        'ChhTdGFydFNjcmVlblN0cmVhbVJlcXVlc3QSHwoLaW5wdXRfZm9jdXMYASABKAhSCmlucHV0Rm'
+        '9jdXM=');
 
 @$core.Deprecated('Use stopScreenStreamRequestDescriptor instead')
 const StopScreenStreamRequest$json = {
@@ -157,3 +192,44 @@ const StopVirtualDisplayRequest$json = {
 /// Descriptor for `StopVirtualDisplayRequest`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List stopVirtualDisplayRequestDescriptor =
     $convert.base64Decode('ChlTdG9wVmlydHVhbERpc3BsYXlSZXF1ZXN0');
+
+@$core.Deprecated('Use sendTextRequestDescriptor instead')
+const SendTextRequest$json = {
+  '1': 'SendTextRequest',
+  '2': [
+    {
+      '1': 'action',
+      '3': 1,
+      '4': 1,
+      '5': 14,
+      '6': '.PB_Gui.TextAction',
+      '10': 'action'
+    },
+    {'1': 'text', '3': 2, '4': 1, '5': 9, '10': 'text'},
+  ],
+};
+
+/// Descriptor for `SendTextRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List sendTextRequestDescriptor = $convert.base64Decode(
+    'Cg9TZW5kVGV4dFJlcXVlc3QSKgoGYWN0aW9uGAEgASgOMhIuUEJfR3VpLlRleHRBY3Rpb25SBm'
+    'FjdGlvbhISCgR0ZXh0GAIgASgJUgR0ZXh0');
+
+@$core.Deprecated('Use inputFocusDescriptor instead')
+const InputFocus$json = {
+  '1': 'InputFocus',
+  '2': [
+    {
+      '1': 'kind',
+      '3': 1,
+      '4': 1,
+      '5': 14,
+      '6': '.PB_Gui.InputFocusKind',
+      '10': 'kind'
+    },
+  ],
+};
+
+/// Descriptor for `InputFocus`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List inputFocusDescriptor = $convert.base64Decode(
+    'CgpJbnB1dEZvY3VzEioKBGtpbmQYASABKA4yFi5QQl9HdWkuSW5wdXRGb2N1c0tpbmRSBGtpbm'
+    'Q=');

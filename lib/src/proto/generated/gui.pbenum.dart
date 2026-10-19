@@ -135,5 +135,6 @@ class TextAction extends $pb.ProtobufEnum {
 
   const TextAction._(super.value, super.name);
 }
+
 const $core.bool _omitEnumNames =
     $core.bool.fromEnvironment('protobuf.omit_enum_names');

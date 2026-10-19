@@ -1,3 +1,15 @@
+// This is a generated file - do not edit.
+//
+// Generated from subghz.proto.
+
+// @dart = 3.3
+
+// ignore_for_file: annotate_overrides, camel_case_types, comment_references
+// ignore_for_file: constant_identifier_names
+// ignore_for_file: curly_braces_in_flow_control_structures
+// ignore_for_file: deprecated_member_use_from_same_package, library_prefixes
+// ignore_for_file: non_constant_identifier_names, prefer_relative_imports
+// ignore_for_file: unused_import
 
 import 'dart:convert' as $convert;
 import 'dart:core' as $core;
@@ -12,6 +24,8 @@ const RadioDevice$json = {
     {'1': 'RADIO_DEVICE_AUTO', '2': 2},
   ],
 };
+
+/// Descriptor for `RadioDevice`. Decode as a `google.protobuf.EnumDescriptorProto`.
 final $typed_data.Uint8List radioDeviceDescriptor = $convert.base64Decode(
     'CgtSYWRpb0RldmljZRIZChVSQURJT19ERVZJQ0VfSU5URVJOQUwQABIZChVSQURJT19ERVZJQ0'
     'VfRVhURVJOQUwQARIVChFSQURJT19ERVZJQ0VfQVVUTxAC');
@@ -28,6 +42,8 @@ const ProtocolFilter$json = {
     {'1': 'PROTOCOL_FILTER_NICE_FLOR_S', '2': 32768},
   ],
 };
+
+/// Descriptor for `ProtocolFilter`. Decode as a `google.protobuf.EnumDescriptorProto`.
 final $typed_data.Uint8List protocolFilterDescriptor = $convert.base64Decode(
     'Cg5Qcm90b2NvbEZpbHRlchIYChRQUk9UT0NPTF9GSUxURVJfTk9ORRAAEh8KGlBST1RPQ09MX0'
     'ZJTFRFUl9SRVZFUlNfUkIyEIAQEhsKFlBST1RPQ09MX0ZJTFRFUl9BTEFSTVMQgCASHAoXUFJP'
@@ -43,6 +59,8 @@ const RxEventType$json = {
     {'1': 'RX_EVENT_STOPPED', '2': 2},
   ],
 };
+
+/// Descriptor for `RxEventType`. Decode as a `google.protobuf.EnumDescriptorProto`.
 final $typed_data.Uint8List rxEventTypeDescriptor = $convert.base64Decode(
     'CgtSeEV2ZW50VHlwZRIRCg1SWF9FVkVOVF9SU1NJEAASEAoMUlhfRVZFTlRfSElUEAESFAoQUl'
     'hfRVZFTlRfU1RPUFBFRBAC');
@@ -54,6 +72,8 @@ const DecodeRawRequest$json = {
     {'1': 'path', '3': 1, '4': 1, '5': 9, '10': 'path'},
   ],
 };
+
+/// Descriptor for `DecodeRawRequest`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List decodeRawRequestDescriptor = $convert
     .base64Decode('ChBEZWNvZGVSYXdSZXF1ZXN0EhIKBHBhdGgYASABKAlSBHBhdGg=');
 
@@ -68,6 +88,8 @@ const DecodeRawResponse$json = {
     {'1': 'activity', '3': 5, '4': 1, '5': 13, '10': 'activity'},
   ],
 };
+
+/// Descriptor for `DecodeRawResponse`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List decodeRawResponseDescriptor = $convert.base64Decode(
     'ChFEZWNvZGVSYXdSZXNwb25zZRIaCghwcm90b2NvbBgBIAEoCVIIcHJvdG9jb2wSJQoOZmxpcH'
     'Blcl9mb3JtYXQYAiABKAlSDWZsaXBwZXJGb3JtYXQSGAoHcGVyY2VudBgDIAEoDVIHcGVyY2Vu'
@@ -78,6 +100,8 @@ final $typed_data.Uint8List decodeRawResponseDescriptor = $convert.base64Decode(
 const SettingsRequest$json = {
   '1': 'SettingsRequest',
 };
+
+/// Descriptor for `SettingsRequest`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List settingsRequestDescriptor =
     $convert.base64Decode('Cg9TZXR0aW5nc1JlcXVlc3Q=');
 
@@ -103,6 +127,8 @@ const SettingsResponse$json = {
     },
   ],
 };
+
+/// Descriptor for `SettingsResponse`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List settingsResponseDescriptor = $convert.base64Decode(
     'ChBTZXR0aW5nc1Jlc3BvbnNlEiAKC2ZyZXF1ZW5jaWVzGAEgAygNUgtmcmVxdWVuY2llcxItCh'
     'Job3BwZXJfZnJlcXVlbmNpZXMYAiADKA1SEWhvcHBlckZyZXF1ZW5jaWVzEhgKB3ByZXNldHMY'
@@ -113,6 +139,8 @@ final $typed_data.Uint8List settingsResponseDescriptor = $convert.base64Decode(
 const DecodeRawStopRequest$json = {
   '1': 'DecodeRawStopRequest',
 };
+
+/// Descriptor for `DecodeRawStopRequest`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List decodeRawStopRequestDescriptor =
     $convert.base64Decode('ChREZWNvZGVSYXdTdG9wUmVxdWVzdA==');
 
@@ -146,6 +174,8 @@ const RxStartRequest$json = {
     {'1': 'sound', '3': 11, '4': 1, '5': 8, '10': 'sound'},
   ],
 };
+
+/// Descriptor for `RxStartRequest`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List rxStartRequestDescriptor = $convert.base64Decode(
     'Cg5SeFN0YXJ0UmVxdWVzdBIcCglmcmVxdWVuY3kYASABKA1SCWZyZXF1ZW5jeRIWCgZwcmVzZX'
     'QYAiABKAlSBnByZXNldBIoChByc3NpX2ludGVydmFsX21zGAMgASgNUg5yc3NpSW50ZXJ2YWxN'
@@ -160,6 +190,8 @@ final $typed_data.Uint8List rxStartRequestDescriptor = $convert.base64Decode(
 const RxStopRequest$json = {
   '1': 'RxStopRequest',
 };
+
+/// Descriptor for `RxStopRequest`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List rxStopRequestDescriptor =
     $convert.base64Decode('Cg1SeFN0b3BSZXF1ZXN0');
 
@@ -184,6 +216,8 @@ const RxConfigRequest$json = {
     {'1': 'sound', '3': 9, '4': 1, '5': 8, '10': 'sound'},
   ],
 };
+
+/// Descriptor for `RxConfigRequest`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List rxConfigRequestDescriptor = $convert.base64Decode(
     'Cg9SeENvbmZpZ1JlcXVlc3QSHAoJZnJlcXVlbmN5GAEgASgNUglmcmVxdWVuY3kSFgoGcHJlc2'
     'V0GAIgASgJUgZwcmVzZXQSGAoHaG9wcGluZxgDIAEoCFIHaG9wcGluZxInCg9ob3BfZnJlcXVl'
@@ -222,6 +256,8 @@ const RxStateResponse$json = {
     {'1': 'sound', '3': 11, '4': 1, '5': 8, '10': 'sound'},
   ],
 };
+
+/// Descriptor for `RxStateResponse`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List rxStateResponseDescriptor = $convert.base64Decode(
     'Cg9SeFN0YXRlUmVzcG9uc2USGAoHcnVubmluZxgBIAEoCFIHcnVubmluZxIcCglmcmVxdWVuY3'
     'kYAiABKA1SCWZyZXF1ZW5jeRIWCgZwcmVzZXQYAyABKAlSBnByZXNldBIYCgdob3BwaW5nGAQg'
@@ -254,6 +290,8 @@ const RxEvent$json = {
     {'1': 'pulses', '3': 10, '4': 3, '5': 13, '10': 'pulses'},
   ],
 };
+
+/// Descriptor for `RxEvent`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List rxEventDescriptor = $convert.base64Decode(
     'CgdSeEV2ZW50EioKBHR5cGUYASABKA4yFi5QQl9TdWJHaHouUnhFdmVudFR5cGVSBHR5cGUSIQ'
     'oMcnNzaV9zYW1wbGVzGAIgASgMUgtyc3NpU2FtcGxlcxIcCglmcmVxdWVuY3kYAyABKA1SCWZy'
@@ -280,6 +318,8 @@ const TxRequest$json = {
     },
   ],
 };
+
+/// Descriptor for `TxRequest`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List txRequestDescriptor = $convert.base64Decode(
     'CglUeFJlcXVlc3QSJQoOZmxpcHBlcl9mb3JtYXQYASABKAlSDWZsaXBwZXJGb3JtYXQSEgoEcG'
     'F0aBgCIAEoCVIEcGF0aBIWCgZyZXBlYXQYAyABKA1SBnJlcGVhdBIuCgZkZXZpY2UYBCABKA4y'
@@ -293,6 +333,8 @@ const TxResponse$json = {
     {'1': 'frequency', '3': 2, '4': 1, '5': 13, '10': 'frequency'},
   ],
 };
+
+/// Descriptor for `TxResponse`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List txResponseDescriptor = $convert.base64Decode(
     'CgpUeFJlc3BvbnNlEhYKBnJlcGVhdBgBIAEoDVIGcmVwZWF0EhwKCWZyZXF1ZW5jeRgCIAEoDV'
     'IJZnJlcXVlbmN5');

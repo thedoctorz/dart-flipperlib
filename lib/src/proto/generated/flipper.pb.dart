@@ -1098,6 +1098,8 @@ class Main extends $pb.GeneratedMessage {
   @$pb.TagNumber(100)
   @$pb.TagNumber(101)
   @$pb.TagNumber(102)
+  @$pb.TagNumber(103)
+  @$pb.TagNumber(104)
   Main_Content whichContent() => _Main_ContentByTag[$_whichOneof(0)]!;
   @$pb.TagNumber(4)
   @$pb.TagNumber(5)
@@ -1198,6 +1200,8 @@ class Main extends $pb.GeneratedMessage {
   @$pb.TagNumber(100)
   @$pb.TagNumber(101)
   @$pb.TagNumber(102)
+  @$pb.TagNumber(103)
+  @$pb.TagNumber(104)
   void clearContent() => $_clearField($_whichOneof(0));
 
   @$pb.TagNumber(1)
